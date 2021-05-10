@@ -70,7 +70,7 @@ def process_incoming_message(event_data):
     reason = 'for ' + message.split('for')[-1]
     if not reason:
         # check for 'because like stated above'
-        reason = 'for ' + message.split('because')[-1]
+        reason = 'because ' + message.split('because')[-1]
     default_reason = "No Reason was provided"
     reason = (default_reason, reason)[reason]
     if user_match:
