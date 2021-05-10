@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_utils import aggregated
 from slack import WebClient
 import datetime
 
@@ -45,16 +46,40 @@ class Thing(db.Model):
     __tablename__ = 'Thing'
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     item = db.Column(db.String)
-    points = db.Column(db.Integer, default=0)
+
+    @aggregated('points', db.Column(db.Integer))
+    def total_points(self):
+        return db.func.sum(Point.value)
+    points = relationship("Point", primaryjoin="and_(Thing.id==Point.awardee_id)")
     user = db.Column(db.Boolean)
     team_id = db.Column(db.String, db.ForeignKey('SlackTeam.id'))
     show_in_global_leaderboard = db.Column(db.Boolean, default=True)
     last_modified = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def increment(self):
-        self.points += 1
-        self.last_modified = datetime.datetime.utcnow()
+    def increment(self, awarder_id, reason):
+        point = Point()
+        point.value = 1
+        point.awardee_id = self.id
+        point.awarder_id = awarder_id
+        point.reason = reason
+        point.time_added = datetime.datetime.utcnow()
+        return point
 
-    def decrement(self):
-        self.points -= 1
-        self.last_modified = datetime.datetime.utcnow()
+    def decrement(self, awarder_id, reason):
+        point = Point()
+        point.value = -1
+        point.awardee_id = self.id
+        point.awarder_id = awarder_id
+        point.reason = reason
+        point.time_added = datetime.datetime.utcnow()
+        return point
+
+
+class Point(db.Model):
+    __tablename__ = 'Point'
+    id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
+    awardee_id = db.Column(db.Integer, db.ForeignKey('Thing.id'))
+    value = db.Column(db.Integer, default=0)
+    reason = db.Column(db.String, default="None Provided")
+    awarder_id = db.Column(db.Integer, db.ForeignKey('Thing.id'))
+    time_added = db.Column(db.DateTime, default=datetime.datetime.utcnow)

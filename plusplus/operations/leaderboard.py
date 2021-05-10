@@ -4,10 +4,10 @@ import json
 
 def generate_leaderboard(team=None, losers=False):
     if losers:
-        ordering = Thing.points.asc()
+        ordering = Thing.total_points.asc()
         header = "Here's the current loserboard:"
     else:
-        ordering = Thing.points.desc()
+        ordering = Thing.total_points.desc()
         header = "Here's the current leaderboard:"
 
     # filter args
@@ -17,21 +17,21 @@ def generate_leaderboard(team=None, losers=False):
     users = Thing.query.filter_by(**user_args).order_by(ordering).limit(10)
     things = Thing.query.filter_by(**thing_args).order_by(ordering).limit(10)
 
-    formatted_things = [f"{thing.item} ({thing.points})" for thing in things]
+    formatted_things = [f"{thing.item} ({thing.total_points})" for thing in things]
     numbered_things = generate_numbered_list(formatted_things)
 
-    formatted_users = [f"<@{user.item.upper()}> ({user.points})" for user in users]
+    formatted_users = [f"<@{user.item.upper()}> ({user.total_points})" for user in users]
     numbered_users = generate_numbered_list(formatted_users)
 
     leaderboard_header = {"type": "section",
                           "text":
                               {
-                                "type": "mrkdwn",
-                                "text": header
-                               }
+                                  "type": "mrkdwn",
+                                  "text": header
+                              }
                           }
     body = {
-                "type": "section",
+        "type": "section",
                 "fields": [
                     {
                         "type": "mrkdwn",
@@ -42,7 +42,7 @@ def generate_leaderboard(team=None, losers=False):
                         "text": "*Users*\n" + numbered_users
                     }
                 ]
-        }
+    }
 
     leaderboard = [leaderboard_header, body]
     return json.dumps(leaderboard)
