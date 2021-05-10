@@ -8,13 +8,13 @@ def update_points(thing, end, user, reason, is_self=False):
         operation = "self"
     elif end == "++":
         operation = "plus"
-        thing.increment(user, reason)
+        point = thing.increment(user, reason)
     elif end == "--":
         operation = "minus"
-        thing.decrement(user, reason)
+        point = thing.decrement(user, reason)
     else:
         operation = "equals"
-    db.session.add(thing)
+    db.session.add(point)
     db.session.commit()
     return generate_string(thing, operation)
 
