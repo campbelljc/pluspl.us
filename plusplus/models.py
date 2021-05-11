@@ -57,20 +57,14 @@ class Thing(db.Model):
     last_modified = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     def increment(self, awarder_id, reason):
-        point = Point()
-        point.value = 1
+        point = Point(1, awarder_id, None, reason)
         point.awardee_id = self.id
-        point.awarder_id = awarder_id
-        point.reason = reason
         point.time_added = datetime.datetime.utcnow()
         return point
 
     def decrement(self, awarder_id, reason):
-        point = Point()
-        point.value = -1
+        point = Point(-1, awarder_id, None, reason)
         point.awardee_id = self.id
-        point.awarder_id = awarder_id
-        point.reason = reason
         point.time_added = datetime.datetime.utcnow()
         return point
 
@@ -83,3 +77,9 @@ class Point(db.Model):
     reason = db.Column(db.String, default="None Provided")
     awarder_id = db.Column(db.Integer, db.ForeignKey('Thing.id'))
     time_added = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __init__(self, value, awarder_id, awardee_id, reason):
+        self.value = value
+        self.awarder_id = awarder_id
+        self.awardee_id = awardee_id
+        self.reason = reason
