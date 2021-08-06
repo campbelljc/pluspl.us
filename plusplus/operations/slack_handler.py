@@ -81,7 +81,7 @@ def process_incoming_message(event_data):
     if ' for ' in message:
         reason = message.split('for')[-1]
     elif ' because ' in message:
-        reason = 'because ' + message.split('because')[-1]
+        reason = message.split('because')[-1]
     else:
         reason = "[no reason provided]"
     
@@ -137,6 +137,12 @@ def process_incoming_message(event_data):
             blocks=help_text(team)
         )
         print("Processed help for team " + team.id)
+    elif "shop" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
+        team.slack_client.chat_postMessage(
+            channel=channel,
+            blocks=shop_text(team)
+        )
+        print("Processed shop for team " + team.id)
     #elif "reset" in message and team.bot_user_id.lower() in message:
     #    team.slack_client.chat_postMessage(
     #        channel=channel,
