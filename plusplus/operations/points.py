@@ -26,7 +26,7 @@ def generate_string(thing, operation):
         formatted_thing = f"<@{thing.item.upper()}>"
     else:
         formatted_thing = thing.item
-    points = thing.points
+    points = thing.total_points
     points_word = "points" if points > 1 else "point"
     points_string = f"{points} {points_word}"
     with open("plusplus/strings.json", "r") as strings:
