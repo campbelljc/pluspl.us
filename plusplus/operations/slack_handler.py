@@ -99,14 +99,9 @@ def process_incoming_message(event_data):
             db.session.add(thing)
             db.session.commit()
             
-        message = update_points(thing, operation, user, reason=reason, is_self=(user == found_user))
-        post_message(message, team, channel, thread_ts=thread_ts)
-        
-        # find user
-        #found_user_id = get_id_for_name(team, found_user)
-        #print(f"<{user}> <{user_match}> <{found_user}> <{found_user_id}>")
-        #assert found_user_id is not None
-        post_message('test message', team, found_user.upper())
+        message_to_admin, message_to_user = update_points(thing, operation, user, reason=reason, is_self=(user == found_user))
+        post_message(message_to_admin, team, channel, thread_ts=thread_ts)
+        post_message(message_to_user, team, found_user.upper())
         
         print("Processed " + thing.item)
     #elif thing_match:

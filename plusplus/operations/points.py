@@ -14,19 +14,23 @@ def update_points(thing, end, user, reason, is_self=False):
         point = thing.decrement(reason)
     else:
         operation = "equals"
-    
+        
     if operation in ["plus", "minus"]:
         db.session.add(thing)
         db.session.add(point)
         db.session.commit()
-    return generate_string(thing, operation)
+    
+    return generate_string(thing, operation, reason, 1)
 
 
-def generate_string(thing, operation):
+def generate_string(thing, operation, reason, pt_increase):    
     if thing.user:
         formatted_thing = f"<@{thing.item.upper()}>"
     else:
         formatted_thing = thing.item
+
+    msg_to_admin = ''
+
     points = thing.total_points
     points_word = "points" if points > 1 else "point"
     points_string = f"{points} {points_word}"
@@ -36,10 +40,12 @@ def generate_string(thing, operation):
             exclamation = random.choice(parsed[operation])
             random_msg = random.choice(parsed[operation + "_points"])
             points = random_msg.format(thing=formatted_thing, points_string=points_string)
-            return f"{exclamation} {points}"
+            msg_to_admin = f"{exclamation} {points}"
         elif operation == "self":
-            return random.choice(parsed[operation]).format(thing=formatted_thing)
+            msg_to_admin = random.choice(parsed[operation]).format(thing=formatted_thing)
         elif operation == "equals":
-            return random.choice(parsed[operation]).format(thing=formatted_thing, points_string=points_string)
-        else:
-            return ""  # probably unnecessary, but here as a fallback
+            msg_to_admin = random.choice(parsed[operation]).format(thing=formatted_thing, points_string=points_string)
+    
+    msg_to_user = f'Congrats! You have been awarded {pt_increase} points for {reason}. You now have a total of {points} points.'
+    
+    return msg_to_admin, msg_to_user
