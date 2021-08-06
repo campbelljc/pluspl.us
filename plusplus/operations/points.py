@@ -16,6 +16,7 @@ def update_points(thing, end, user, reason, is_self=False):
         operation = "equals"
     
     if operation in ["plus", "minus"]:
+        db.session.add(thing)
         db.session.add(point)
         db.session.commit()
     return generate_string(thing, operation)
