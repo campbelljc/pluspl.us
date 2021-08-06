@@ -79,6 +79,9 @@ def process_incoming_message(event_data):
         thing = Thing.query.filter_by(item=found_user.lower(), team=team).first()
         if not thing:
             thing = Thing(item=found_user.lower(), points=[], user=True, team_id=team.id)
+            db.session.add(thing)
+            db.session.commit()
+            
         message = update_points(thing, operation, user, reason=reason, is_self=(user == found_user))
         post_message(message, team, channel, thread_ts=thread_ts)
         print("Processed " + thing.item)
@@ -89,6 +92,9 @@ def process_incoming_message(event_data):
         thing = Thing.query.filter_by(item=found_thing.lower(), team=team).first()
         if not thing:
             thing = Thing(item=found_thing.lower(), points=[], user=False, team_id=team.id)
+            db.session.add(thing)
+            db.session.commit()
+            
         message = update_points(thing, operation, user, reason=reason)
         post_message(message, team, channel, thread_ts)
         print("Processed " + thing.item)
