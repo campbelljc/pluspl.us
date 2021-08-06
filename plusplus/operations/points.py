@@ -8,10 +8,10 @@ def update_points(thing, end, user, reason, is_self=False):
     #    operation = "self"
     if end == "++":
         operation = "plus"
-        point = thing.increment(user, reason)
+        point = thing.increment(reason)
     elif end == "--":
         operation = "minus"
-        point = thing.decrement(user, reason)
+        point = thing.decrement(reason)
     else:
         operation = "equals"
     

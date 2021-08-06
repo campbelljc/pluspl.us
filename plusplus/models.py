@@ -55,14 +55,14 @@ class Thing(db.Model):
     show_in_global_leaderboard = db.Column(db.Boolean, default=True)
     last_modified = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def increment(self, awarder_id, reason):
-        point = Point(1, awarder_id, None, reason)
+    def increment(self, reason):
+        point = Point(1, None, reason)
         point.awardee_id = self.id
         point.time_added = datetime.datetime.utcnow()
         return point
 
-    def decrement(self, awarder_id, reason):
-        point = Point(-1, awarder_id, None, reason)
+    def decrement(self, reason):
+        point = Point(-1, None, reason)
         point.awardee_id = self.id
         point.time_added = datetime.datetime.utcnow()
         return point
@@ -74,11 +74,11 @@ class Point(db.Model):
     awardee_id = db.Column(db.Integer, db.ForeignKey('Thing.id'))
     value = db.Column(db.Integer, default=0)
     reason = db.Column(db.String, default="None Provided")
-    awarder_id = db.Column(db.Integer, db.ForeignKey('Thing.id'))
+    #awarder_id = db.Column(db.Integer, db.ForeignKey('Thing.id'))
     time_added = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, value, awarder_id, awardee_id, reason):
+    def __init__(self, value, awardee_id, reason):
         self.value = value
-        self.awarder_id = awarder_id
+        #self.awarder_id = awarder_id
         self.awardee_id = awardee_id
         self.reason = reason
