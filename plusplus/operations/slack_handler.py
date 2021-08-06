@@ -91,40 +91,40 @@ def process_incoming_message(event_data):
         message = update_points(thing, operation, user, reason=reason, is_self=(user == found_user))
         post_message(message, team, channel, thread_ts=thread_ts)
         print("Processed " + thing.item)
-    elif thing_match:
-        # handle thing point operations
-        found_thing = thing_match.groups()[0].strip()
-        operation = thing_match.groups()[1].strip()
-        thing = Thing.query.filter_by(item=found_thing.lower(), team=team).first()
-        if not thing:
-            thing = Thing(item=found_thing.lower(), points=[], user=False, team_id=team.id)
-            db.session.add(thing)
-            db.session.commit()
-            
-        message = update_points(thing, operation, user, reason=reason)
-        post_message(message, team, channel, thread_ts)
-        print("Processed " + thing.item)
+    #elif thing_match:
+    #    # handle thing point operations
+    #    found_thing = thing_match.groups()[0].strip()
+    #    operation = thing_match.groups()[1].strip()
+    #    thing = Thing.query.filter_by(item=found_thing.lower(), team=team).first()
+    #    if not thing:
+    #        thing = Thing(item=found_thing.lower(), points=[], user=False, team_id=team.id)
+    #        db.session.add(thing)
+    #        db.session.commit()
+    #        
+    #    message = update_points(thing, operation, user, reason=reason)
+    #    post_message(message, team, channel, thread_ts)
+    #    print("Processed " + thing.item)
     elif "leaderboard" in message and team.bot_user_id.lower() in message:
         team.slack_client.chat_postMessage(
             channel=channel,
             blocks=generate_leaderboard(team=team)
         )
         print("Processed leaderboard for team " + team.id)
-    elif "loserboard" in message and team.bot_user_id.lower() in message:
-        team.slack_client.chat_postMessage(
-            channel=channel,
-            blocks=generate_leaderboard(team=team, losers=True)
-        )
-        print("Processed loserboard for team " + team.id)
+    #elif "loserboard" in message and team.bot_user_id.lower() in message:
+    #    team.slack_client.chat_postMessage(
+    #        channel=channel,
+    #        blocks=generate_leaderboard(team=team, losers=True)
+    #    )
+    #    print("Processed loserboard for team " + team.id)
     elif "help" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
         team.slack_client.chat_postMessage(
             channel=channel,
             blocks=help_text(team)
         )
         print("Processed help for team " + team.id)
-    elif "reset" in message and team.bot_user_id.lower() in message:
-        team.slack_client.chat_postMessage(
-            channel=channel,
-            blocks=generate_reset_block()
-        )
+    #elif "reset" in message and team.bot_user_id.lower() in message:
+    #    team.slack_client.chat_postMessage(
+    #        channel=channel,
+    #        blocks=generate_reset_block()
+    #    )
     return "OK", 200

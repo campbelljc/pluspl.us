@@ -33,10 +33,10 @@ def generate_leaderboard(team=None, losers=False):
     body = {
         "type": "section",
                 "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": "*Things*\n" + numbered_things
-                    },
+                    #{
+                    #    "type": "mrkdwn",
+                    #    "text": "*Things*\n" + numbered_things
+                    #},
                     {
                         "type": "mrkdwn",
                         "text": "*Users*\n" + numbered_users
