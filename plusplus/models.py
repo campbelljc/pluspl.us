@@ -45,6 +45,7 @@ class Thing(db.Model):
     __tablename__ = 'Thing'
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     item = db.Column(db.String)
+    ta_email = db.Column(db.String)
 
     @aggregated('points', db.Column(db.Integer))
     def total_points(self):

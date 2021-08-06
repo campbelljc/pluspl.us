@@ -2,7 +2,7 @@ from .. import config
 
 
 def help_text(team):
-    commands = ["• *{ping} leaderboard*: get the current high scoring people and things",
+    commands = ["• *{ping} leaderboard*: show the current high scores",
                 "• *{ping} shop*: show the list of things available to exchange for coins"]
     formatted_commands = list()
     for command in commands:
@@ -13,7 +13,7 @@ def help_text(team):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"Hey hey! Here's a quick rundown on how to use <@{team.bot_user_id}>"
+                "text": f"Hey! Here's a quick rundown on how to use <@{team.bot_user_id}>"
             }
         },
         {

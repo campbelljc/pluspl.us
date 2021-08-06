@@ -72,6 +72,12 @@ def process_incoming_message(event_data):
     team.update_last_access()
     db.session.add(team)
     db.session.commit()
+    
+    if ';ta_email=' in message:
+        ta_email = message.split(';ta_email=')[1]
+        message = message.split(';ta_email=')[0]
+    else:
+        ta_email = None
 
     user_match = user_exp.match(message)
     thing_match = thing_exp.match(message)
@@ -97,7 +103,8 @@ def process_incoming_message(event_data):
 
         thing = Thing.query.filter_by(item=found_user.lower(), team=team).first()
         if not thing:
-            thing = Thing(item=found_user.lower(), points=[], user=True, team_id=team.id)
+            assert ta_email is not None
+            thing = Thing(item=found_user.lower(), ta_email=ta_email, points=[], user=True, team_id=team.id)
             db.session.add(thing)
             db.session.commit()
             
