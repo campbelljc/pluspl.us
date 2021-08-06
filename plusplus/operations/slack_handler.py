@@ -9,6 +9,7 @@ import re
 user_exp = re.compile(r"<@([A-Za-z0-9]+)> *(\+\+|\-\-|==)")
 thing_exp = re.compile(r"#([A-Za-z0-9\.\-_@$!\*\(\)\,\?\/%\\\^&\[\]\{\"':; ]+)(\+\+|\-\-|==)")
 
+ADMIN_USER = 'u029u80gjf9'
 
 def post_message(message, team, channel, thread_ts=None):
     if thread_ts:
@@ -72,6 +73,11 @@ def process_incoming_message(event_data):
         reason = 'because ' + message.split('because')[-1]
     else:
         reason = "[no reason provided]"
+    
+    if (user_match or thing_match) and user != ADMIN_USER:
+        post_message('Sorry, only the server admin can add points!', team, channel, thread_ts=thread_ts)
+        return "OK", 200
+
     if user_match:
         # handle user point operations
         found_user = user_match.groups()[0].strip()
