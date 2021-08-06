@@ -17,7 +17,6 @@ def get_id_for_name(team, name):
     users = response["members"]
 
     for user in users:
-        print(user)
         if user['name'] == name:
             return user['id']
     return None
@@ -104,11 +103,10 @@ def process_incoming_message(event_data):
         post_message(message, team, channel, thread_ts=thread_ts)
         
         # find user
-        found_user_id = get_id_for_name(team, found_user)
-        print(f"<{user}> <{user_match}> <{found_user}> <{found_user_id}>")
-        #u029u80gjf9 <re.Match object; span=(0, 17), match='<@u029z28dzek> ++'> u029z28dzek None
-        assert found_user_id is not None
-        post_message('test message', team, found_user_id)
+        #found_user_id = get_id_for_name(team, found_user)
+        #print(f"<{user}> <{user_match}> <{found_user}> <{found_user_id}>")
+        #assert found_user_id is not None
+        post_message('test message', team, found_user)
         
         print("Processed " + thing.item)
     #elif thing_match:
