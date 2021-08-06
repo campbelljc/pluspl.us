@@ -40,12 +40,12 @@ def generate_string(thing, operation, reason, pt_increase):
             exclamation = random.choice(parsed[operation])
             random_msg = random.choice(parsed[operation + "_points"])
             points = random_msg.format(thing=formatted_thing, points_string=points_string)
-            msg_to_admin = f"{exclamation} {points}"
+            msg_to_admin = f"{points}"
         elif operation == "self":
             msg_to_admin = random.choice(parsed[operation]).format(thing=formatted_thing)
         elif operation == "equals":
             msg_to_admin = random.choice(parsed[operation]).format(thing=formatted_thing, points_string=points_string)
     
-    msg_to_user = f'Congrats! You have been awarded {pt_increase} points for {reason}. You now have a total of {points} points.'
+    msg_to_user = f'Congrats! You have been awarded {pt_increase} points for{reason}. You now have a total of {thing.total_points} {points_word}.'
     
     return msg_to_admin, msg_to_user
