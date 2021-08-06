@@ -41,7 +41,6 @@ class SlackTeam(db.Model):
         self.team_domain = f"https://{response['team']['domain']}.slack.com"
         self.team_email_domain = response['team']['email_domain']
 
-
 class Thing(db.Model):
     __tablename__ = 'Thing'
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
