@@ -66,13 +66,12 @@ def process_incoming_message(event_data):
     # Hacky way right now to determine what the reason is
     # going to assume all reasons start with the word 'for'
     # TODO can probably also start with 'because'
-    # ie @wadah++ for being a piece of shit
-    reason = 'for ' + message.split('for')[-1]
-    if not reason:
-        # check for 'because like stated above'
+    if ' for ' in message:
+        reason = message.split('for')[-1]
+    elif ' because ' in message:
         reason = 'because ' + message.split('because')[-1]
-    default_reason = "No Reason was provided"
-    reason = (default_reason, reason)[reason]
+    else:
+        reason = "[no reason provided]"
     if user_match:
         # handle user point operations
         found_user = user_match.groups()[0].strip()
@@ -80,7 +79,7 @@ def process_incoming_message(event_data):
         thing = Thing.query.filter_by(item=found_user.lower(), team=team).first()
         if not thing:
             thing = Thing(item=found_user.lower(), points=0, user=True, team_id=team.id)
-        message = update_points(thing, operation, user, reason=default_reason, is_self=(user == found_user))
+        message = update_points(thing, operation, user, reason=reason, is_self=(user == found_user))
         post_message(message, team, channel, thread_ts=thread_ts)
         print("Processed " + thing.item)
     elif thing_match:
@@ -90,7 +89,7 @@ def process_incoming_message(event_data):
         thing = Thing.query.filter_by(item=found_thing.lower(), team=team).first()
         if not thing:
             thing = Thing(item=found_thing.lower(), points=0, user=False, team_id=team.id)
-        message = update_points(thing, operation, user, reason=default_reason)
+        message = update_points(thing, operation, user, reason=reason)
         post_message(message, team, channel, thread_ts)
         print("Processed " + thing.item)
     elif "leaderboard" in message and team.bot_user_id.lower() in message:
