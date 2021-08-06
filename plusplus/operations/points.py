@@ -3,12 +3,12 @@ import json
 import random
 
 
-def update_points(thing, end, user, reason, is_self=False):
+def update_points(thing, end, user, num_pts, reason, is_self=False):
     #if is_self and end != '==':  # don't allow someone to plus themself
     #    operation = "self"
-    if end == "++":
+    if end in ['++', '+=']:
         operation = "plus"
-        point = thing.increment(reason)
+        point = thing.increment(num_pts, reason)
     elif end == "--":
         operation = "minus"
         point = thing.decrement(reason)
@@ -20,10 +20,10 @@ def update_points(thing, end, user, reason, is_self=False):
         db.session.add(point)
         db.session.commit()
     
-    return generate_string(thing, operation, reason, 1)
+    return generate_string(thing, operation, num_pts, reason)
 
 
-def generate_string(thing, operation, reason, pt_increase):    
+def generate_string(thing, operation, num_pts, reason):    
     if thing.user:
         formatted_thing = f"<@{thing.item.upper()}>"
     else:
@@ -46,6 +46,6 @@ def generate_string(thing, operation, reason, pt_increase):
         elif operation == "equals":
             msg_to_admin = random.choice(parsed[operation]).format(thing=formatted_thing, points_string=points_string)
     
-    msg_to_user = f'Congrats! You have been awarded {pt_increase} points for{reason}. You now have a total of {thing.total_points} {points_word}.'
+    msg_to_user = f'Congrats! You have been awarded {num_pts} points for{reason}. You now have a total of {thing.total_points} {points_word}.'
     
     return msg_to_admin, msg_to_user

@@ -6,7 +6,7 @@ from plusplus.models import db, SlackTeam, Thing
 from flask import request
 import re
 
-user_exp = re.compile(r"<@([A-Za-z0-9]+)> *(\+\+|\-\-|==)")
+user_exp = re.compile(r"<@([A-Za-z0-9]+)> *(\+\+|\-\-|==|\+\=) ([0-9]+)")
 thing_exp = re.compile(r"#([A-Za-z0-9\.\-_@$!\*\(\)\,\?\/%\\\^&\[\]\{\"':; ]+)(\+\+|\-\-|==)")
 
 ADMIN_USER = 'u029u80gjf9'
@@ -93,13 +93,15 @@ def process_incoming_message(event_data):
         # handle user point operations
         found_user = user_match.groups()[0].strip()
         operation = user_match.groups()[1].strip()
+        num_pts = int(user_match.groups()[2].strip())
+
         thing = Thing.query.filter_by(item=found_user.lower(), team=team).first()
         if not thing:
             thing = Thing(item=found_user.lower(), points=[], user=True, team_id=team.id)
             db.session.add(thing)
             db.session.commit()
             
-        message_to_admin, message_to_user = update_points(thing, operation, user, reason=reason, is_self=(user == found_user))
+        message_to_admin, message_to_user = update_points(thing, operation, user, num_pts, reason=reason, is_self=(user == found_user))
         post_message(message_to_admin, team, channel, thread_ts=thread_ts)
         post_message(message_to_user, team, found_user.upper())
         

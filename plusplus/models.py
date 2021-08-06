@@ -55,8 +55,8 @@ class Thing(db.Model):
     show_in_global_leaderboard = db.Column(db.Boolean, default=True)
     last_modified = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def increment(self, reason):
-        point = Point(1, None, reason)
+    def increment(self, num_pts, reason):
+        point = Point(num_pts, None, reason)
         point.awardee_id = self.id
         point.time_added = datetime.datetime.utcnow()
         return point
