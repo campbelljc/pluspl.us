@@ -12,10 +12,10 @@ thing_exp = re.compile(r"#([A-Za-z0-9\.\-_@$!\*\(\)\,\?\/%\\\^&\[\]\{\"':; ]+)(\
 ADMIN_USER = 'u029u80gjf9'
 
 
-response = team.slack_client.users_list()
-users = response["members"]
+def get_id_for_name(team, name):
+    response = team.slack_client.users_list()
+    users = response["members"]
 
-def get_id_for_name(name):
     for user in users:
         if user['name'] == name:
             return user['id']
@@ -103,7 +103,7 @@ def process_incoming_message(event_data):
         post_message(message, team, channel, thread_ts=thread_ts)
         
         # find user
-        found_user_id = get_id_for_name(found_user)
+        found_user_id = get_id_for_name(team, found_user)
         print(user, user_match, found_user, found_user_id)
         post_message('test message', team, found_user_id)
         
