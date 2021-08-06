@@ -50,7 +50,7 @@ class Thing(db.Model):
     @aggregated('points', db.Column(db.Integer))
     def total_points(self):
         return db.func.sum(Point.value)
-    points = relationship("Point", primaryjoin="and_(Thing.id==Point.awardee_id)")
+    points = db.relationship("Point", primaryjoin="and_(Thing.id==Point.awardee_id)")
     user = db.Column(db.Boolean)
     team_id = db.Column(db.String, db.ForeignKey('SlackTeam.id'))
     show_in_global_leaderboard = db.Column(db.Boolean, default=True)
