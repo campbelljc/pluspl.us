@@ -4,9 +4,9 @@ import random
 
 
 def update_points(thing, end, user, reason, is_self=False):
-    if is_self and end != '==':  # don't allow someone to plus themself
-        operation = "self"
-    elif end == "++":
+    #if is_self and end != '==':  # don't allow someone to plus themself
+    #    operation = "self"
+    if end == "++":
         operation = "plus"
         point = thing.increment(user, reason)
     elif end == "--":
@@ -14,8 +14,10 @@ def update_points(thing, end, user, reason, is_self=False):
         point = thing.decrement(user, reason)
     else:
         operation = "equals"
-    db.session.add(point)
-    db.session.commit()
+    
+    if operation in ["plus", "minus"]:
+        db.session.add(point)
+        db.session.commit()
     return generate_string(thing, operation)
 
 

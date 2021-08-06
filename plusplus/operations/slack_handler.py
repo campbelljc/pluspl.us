@@ -52,6 +52,7 @@ def process_incoming_message(event_data):
 
     message = event.get('text').lower()
     user = event.get('user').lower()
+    print("User:", user)
     channel = event.get('channel')
     channel_type = event.get('channel_type')
 
