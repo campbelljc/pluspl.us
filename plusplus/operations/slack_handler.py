@@ -38,30 +38,20 @@ def post_message(message, team, channel, thread_ts=None):
 
 
 def process_incoming_message(event_data):
-    # ignore retries
     if request.headers.get('X-Slack-Retry-Reason'):
-        return "Status: OK"
+        return "Status: OK" # ignore retries
 
     event = event_data['event']
     subtype = event.get('subtype', '')
 
-    # is the message from a thread
-    # hacky workaround to determine the event subtype due to a bug
-    # with Slack as of 6/1/2020 where subtypes are not sent over the events API
-    # https://api.slack.com/events/message/message_replied
+    if subtype in ['bot_message' or 'message_changed']:
+        return "Status: OK" # ignore bot/edited messages
+        
     if 'thread_ts' in event and event['ts'] != event['thread_ts']:
         # has to be a top-level message if thread_ts is provided
         thread_ts = event['thread_ts']
     else:
-        thread_ts = None
-
-    # ignore bot messages
-    if subtype == 'bot_message':
-        return "Status: OK"
-
-    # ignore edited messages
-    if subtype == 'message_changed':
-        return "Status: OK"
+        thread_ts = None # message not from a thread
 
     message = event.get('text').lower()
     user = event.get('user').lower()
@@ -74,86 +64,59 @@ def process_incoming_message(event_data):
     db.session.add(team)
     db.session.commit()
     
-    if ';ta_id=' in message:
-        ta_id = message.split(';ta_id=')[1]
-        message = message.split(';ta_id=')[0]
-    else:
-        ta_id = None
-
-    user_match = user_exp.match(message)
-    thing_match = thing_exp.match(message)
-    # Hacky way right now to determine what the reason is
-    # going to assume all reasons start with the word 'for'
-    # TODO can probably also start with 'because'
-    if ' for ' in message:
-        reason = message.split('for')[-1]
-    elif ' because ' in message:
-        reason = message.split('because')[-1]
-    else:
-        reason = "[no reason provided]"
-    
-    if (user_match or thing_match) and user != ADMIN_USER:
-        post_message('Sorry, only the server admin can add points!', team, channel, thread_ts=thread_ts)
-        return "OK", 200
-
-    if user_match:
-        # handle user point operations
-        found_user = user_match.groups()[0].strip()
-        operation = user_match.groups()[1].strip()
-        num_pts = int(user_match.groups()[2].strip())
-
-        thing = Thing.query.filter_by(item=found_user.lower(), team=team).first()
-        if not thing:
-            assert ta_id is not None
-            thing = Thing(item=found_user.lower(), ta_id=ta_id, points=[], user=True, team_id=team.id)
-            db.session.add(thing)
-            db.session.commit()
-            
-        message_to_admin, message_to_user = update_points(thing, operation, user, num_pts, reason=reason, is_self=(user == found_user))
-        post_message(message_to_admin, team, channel, thread_ts=thread_ts)
-        post_message(message_to_user, team, found_user.upper())
-        
-        print("Processed " + thing.item)
-    #elif thing_match:
-    #    # handle thing point operations
-    #    found_thing = thing_match.groups()[0].strip()
-    #    operation = thing_match.groups()[1].strip()
-    #    thing = Thing.query.filter_by(item=found_thing.lower(), team=team).first()
-    #    if not thing:
-    #        thing = Thing(item=found_thing.lower(), points=[], user=False, team_id=team.id)
-    #        db.session.add(thing)
-    #        db.session.commit()
-    #        
-    #    message = update_points(thing, operation, user, reason=reason)
-    #    post_message(message, team, channel, thread_ts)
-    #    print("Processed " + thing.item)
-    elif "leaderboard" in message and team.bot_user_id.lower() in message:
+    if "leaderboard" in message and team.bot_user_id.lower() in message:
         team.slack_client.chat_postMessage(
             channel=channel,
             blocks=generate_leaderboard(team=team)
         )
         print("Processed leaderboard for team " + team.id)
-    #elif "loserboard" in message and team.bot_user_id.lower() in message:
-    #    team.slack_client.chat_postMessage(
-    #        channel=channel,
-    #        blocks=generate_leaderboard(team=team, losers=True)
-    #    )
-    #    print("Processed loserboard for team " + team.id)
+        return "OK", 200
     elif "help" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
         team.slack_client.chat_postMessage(
             channel=channel,
             blocks=help_text(team)
         )
         print("Processed help for team " + team.id)
+        return "OK", 200
     elif "shop" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
         team.slack_client.chat_postMessage(
             channel=channel,
             blocks=shop_text(team)
         )
         print("Processed shop for team " + team.id)
-    #elif "reset" in message and team.bot_user_id.lower() in message:
-    #    team.slack_client.chat_postMessage(
-    #        channel=channel,
-    #        blocks=generate_reset_block()
-    #    )
+        return "OK", 200
+
+    # handle user point operations
+
+    user_match = user_exp.match(message)
+    if not user_match:
+        return "OK", 200
+    
+    if user != ADMIN_USER:
+        post_message('Sorry, only the server admin can add points!', team, channel, thread_ts=thread_ts)
+        return "OK", 200
+
+    if ';ta_id=' in message:
+        ta_id = message.split(';ta_id=')[1]
+        message = message.split(';ta_id=')[0]
+    else:
+        ta_id = None
+    
+    found_user = user_match.groups()[0].strip()
+    operation = user_match.groups()[1].strip()
+    num_pts = int(user_match.groups()[2].strip())
+    reason = message.split('for')[-1] if ' for ' in message else "[no reason provided]"        
+    
+    user = Thing.query.filter_by(item=found_user.lower(), team=team).first()
+    if not user:
+        assert ta_id is not None
+        user = Thing(item=found_user.lower(), ta_id=ta_id, points=[], user=True, team_id=team.id)
+        db.session.add(user)
+        db.session.commit()
+    
+    message_to_admin, message_to_user = update_points(user, operation, user, num_pts, reason=reason, is_self=(user == found_user))
+    post_message(message_to_admin, team, channel, thread_ts=thread_ts)
+    post_message(message_to_user, team, found_user.upper())
+    
+    print("Processed " + user.item)
     return "OK", 200
