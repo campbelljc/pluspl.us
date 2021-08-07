@@ -1,6 +1,7 @@
 from plusplus.operations.points import update_points
 from plusplus.operations.leaderboard import generate_leaderboard
 from plusplus.operations.help import help_text
+from plusplus.operations.shop import shop_text
 from plusplus.operations.reset import generate_reset_block
 from plusplus.models import db, SlackTeam, Thing
 from flask import request
@@ -73,11 +74,11 @@ def process_incoming_message(event_data):
     db.session.add(team)
     db.session.commit()
     
-    if ';ta_email=' in message:
-        ta_email = message.split(';ta_email=')[1]
-        message = message.split(';ta_email=')[0]
+    if ';ta_id=' in message:
+        ta_id = message.split(';ta_id=')[1]
+        message = message.split(';ta_id=')[0]
     else:
-        ta_email = None
+        ta_id = None
 
     user_match = user_exp.match(message)
     thing_match = thing_exp.match(message)
@@ -103,8 +104,8 @@ def process_incoming_message(event_data):
 
         thing = Thing.query.filter_by(item=found_user.lower(), team=team).first()
         if not thing:
-            assert ta_email is not None
-            thing = Thing(item=found_user.lower(), ta_email=ta_email, points=[], user=True, team_id=team.id)
+            assert ta_id is not None
+            thing = Thing(item=found_user.lower(), ta_id=ta_id, points=[], user=True, team_id=team.id)
             db.session.add(thing)
             db.session.commit()
             
