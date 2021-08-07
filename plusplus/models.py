@@ -62,8 +62,8 @@ class Thing(db.Model):
         point.time_added = datetime.datetime.utcnow()
         return point
 
-    def decrement(self, reason):
-        point = Point(-1, None, reason)
+    def decrement(self, num_pts, reason):
+        point = Point(-num_pts, None, reason)
         point.awardee_id = self.id
         point.time_added = datetime.datetime.utcnow()
         return point

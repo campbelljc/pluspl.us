@@ -7,7 +7,7 @@ from plusplus.models import db, SlackTeam, Thing
 from flask import request
 import re
 
-user_exp = re.compile(r"<@([A-Za-z0-9]+)> *(\+\+|\-\-|==|\+\=) ([0-9]+)")
+user_exp = re.compile(r"<@([A-Za-z0-9]+)> *(\+\+|\-\-|==|\+\=|\-\=) ([0-9]+)")
 thing_exp = re.compile(r"#([A-Za-z0-9\.\-_@$!\*\(\)\,\?\/%\\\^&\[\]\{\"':; ]+)(\+\+|\-\-|==)")
 
 ADMIN_USER = 'u029u80gjf9'
@@ -105,9 +105,9 @@ def process_incoming_message(event_data):
                     # send message back & send message to TA
                     assert user.ta_id is not None
                     post_message(f'Ok. Your point balance will be updated and a message will be sent to your TA. Please allow for some days for them to put through your request.', team, channel, thread_ts=thread_ts)
-                    update_points(user, -pts, reason=f'Redeemed {pts} points for {desc}')
-                    post_message(f'Student <@{channel}> spent {pts} points to redeem {desc}.', team, user.ta_id)
-                    
+                    update_points(user, '-=', pts, reason=f'Redeemed {pts} points for {desc}')
+                    post_message(f'Student <@{channel}> spent {pts} points to redeem {desc}.', team, user.ta_id)                    
+        
         print("Processed exchange for team " + team.id)
         return "OK", 200
         
@@ -140,7 +140,7 @@ def process_incoming_message(event_data):
         db.session.add(user)
         db.session.commit()
     
-    message_to_admin, message_to_user = update_points(user, operation, user, num_pts, reason=reason, is_self=(user == found_user))
+    message_to_admin, message_to_user = update_points(user, operation, num_pts, reason=reason, is_self=(user == found_user))
     post_message(message_to_admin, team, channel, thread_ts=thread_ts)
     post_message(message_to_user, team, found_user.upper())
     

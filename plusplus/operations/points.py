@@ -3,15 +3,15 @@ import json
 import random
 
 
-def update_points(thing, end, user, num_pts, reason, is_self=False):
+def update_points(thing, end, num_pts, reason, is_self=False):
     #if is_self and end != '==':  # don't allow someone to plus themself
     #    operation = "self"
     if end in ['++', '+=']:
         operation = "plus"
         point = thing.increment(num_pts, reason)
-    elif end == "--":
+    elif end in ["--", '-=']:
         operation = "minus"
-        point = thing.decrement(reason)
+        point = thing.decrement(num_pts, reason)
     else:
         operation = "equals"
         

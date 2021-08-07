@@ -11,7 +11,7 @@ def get_shop_option(option_num):
 def shop_text(team):
     option_texts = []
     for option in shop_options:
-        option_texts.append(f'** [{option[0]}] ** (** {option[1]} coins) ** {option[2]}')
+        option_texts.append(f'*[{option[0]}]* (*{option[1]} coins*) {option[2]}')
     
     option_texts += ['*Other options will be available as the term continues.*']
     
@@ -34,7 +34,7 @@ def shop_text(team):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"Type **<@{team.bot_user_id}> exchange *[option_number]* ** to initiate an exchange."
+                "text": f"Type *<@{team.bot_user_id}> exchange [option_number]* to initiate an exchange."
             }
         }
     ]
