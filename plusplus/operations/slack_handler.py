@@ -1,7 +1,7 @@
 from plusplus.operations.points import update_points
 from plusplus.operations.leaderboard import generate_leaderboard
 from plusplus.operations.help import help_text
-from plusplus.operations.shop import shop_text
+from plusplus.operations.shop import *
 from plusplus.operations.reset import generate_reset_block
 from plusplus.models import db, SlackTeam, Thing
 from flask import request
@@ -85,6 +85,32 @@ def process_incoming_message(event_data):
         )
         print("Processed shop for team " + team.id)
         return "OK", 200
+    elif "exchange" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
+        option = message.split("exchange")[-1].strip()
+        if not all(c.isdigit() for c in option):
+            post_message('Did not recognize that option. Did you enter a number?', team, channel, thread_ts=thread_ts)
+        else:
+            option = int(option)
+            option_info = get_shop_option(option)
+            option_num, pts, desc = option_info
+            
+            # check if user has enough points
+            user = Thing.query.filter_by(item=user.lower(), team=team).first()
+            if not user:
+                post_message('Your user ID is not recognized or you do not have any registered points. (There may be a server error.)', team, channel, thread_ts=thread_ts)
+            else:
+                if user.total_points < pts:
+                    post_message(f'This option costs {pts}, but you only have {user.total_points}.', team, channel, thread_ts=thread_ts)
+                else:
+                    # send message back & send message to TA
+                    assert user.ta_id is not None
+                    post_message(f'Ok. Your point balance will be updated and a message will be sent to your TA. Please allow for some days for them to put through your request.', team, channel, thread_ts=thread_ts)
+                    update_points(user, -pts, reason=f'Redeemed {pts} points for {desc}')
+                    post_message(f'Student <@{channel}> spent {pts} points to redeem {desc}.', team, user.ta_id)
+                    
+        print("Processed exchange for team " + team.id)
+        return "OK", 200
+        
 
     # handle user point operations
 

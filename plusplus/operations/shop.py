@@ -1,11 +1,19 @@
 from .. import config
 
+shop_options = [
+    (1, 0, 'Hint for Assignment 1 private test')
+]
+
+def get_shop_option(option_num):
+    assert shop_options[option_num-1][0] == option_num
+    return shop_options[option_num-1]
 
 def shop_text(team):
-    options = [
-        '** [1] ** (** X coins) ** Hint for Assignment 1 private test',
-        '*Other options will be available as the term continues.*'
-    ]
+    option_texts = []
+    for option in shop_options:
+        option_texts.append(f'** [{option[0]}] ** (** {option[1]} coins) ** {option[2]}')
+    
+    shop_options += ['*Other options will be available as the term continues.*']
     
     shop_block = [
         {
@@ -19,7 +27,7 @@ def shop_text(team):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "\n".join(options)
+                "text": "\n".join(option_texts)
             }
         },
         {
