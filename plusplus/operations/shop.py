@@ -3,7 +3,7 @@ from .. import config
 
 def shop_text(team):
     options = [
-        '** X coins ** Hint for Assignment 1 private test',
+        '** [1] ** (** X coins) ** Hint for Assignment 1 private test',
         '*Other options will be available as the term continues.*'
     ]
     
@@ -26,7 +26,7 @@ def shop_text(team):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"Type <@{team.bot_user_id}> exchange [option] to initiate an exchange."
+                "text": f"Type **<@{team.bot_user_id}> exchange *[option_number]* ** to initiate an exchange."
             }
         }
     ]
