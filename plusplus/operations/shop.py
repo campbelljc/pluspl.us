@@ -13,7 +13,7 @@ def shop_text(team):
     for option in shop_options:
         option_texts.append(f'** [{option[0]}] ** (** {option[1]} coins) ** {option[2]}')
     
-    shop_options += ['*Other options will be available as the term continues.*']
+    option_texts += ['*Other options will be available as the term continues.*']
     
     shop_block = [
         {
