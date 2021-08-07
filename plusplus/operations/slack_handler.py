@@ -106,7 +106,7 @@ def process_incoming_message(event_data):
                     assert user.ta_id is not None
                     post_message(f'Ok. Your point balance will be updated and a message will be sent to your TA. Please allow for some days for them to put through your request.', team, channel, thread_ts=thread_ts)
                     update_points(user, '-=', pts, reason=f'Redeemed {pts} points for {desc}')
-                    post_message(f'Student <@{channel}> spent {pts} points to redeem {desc}.', team, user.ta_id)                    
+                    post_message(f'Student <@{channel}> spent {pts} points to redeem {desc}.', team, user.ta_id.upper())                    
         
         print("Processed exchange for team " + team.id)
         return "OK", 200
