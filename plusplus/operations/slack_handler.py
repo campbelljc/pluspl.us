@@ -225,3 +225,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         
     elif str(option_num) == "3":
         post_message(f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption.", team, channel, thread_ts=thread_ts)
+    
+    else:
+        post_message("Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3.", team, channel, thread_ts=thread_ts)
+        return False
