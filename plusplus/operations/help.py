@@ -3,7 +3,7 @@ from .. import config
 
 def help_text(team):
     commands = ["• *{ping} leaderboard*: show the current high scores",
-                "• *{ping} shop*: show the list of things available to exchange for coins"]
+                "• *{ping} shop*: show the list of things available to redeem for coins"]
     formatted_commands = list()
     for command in commands:
         formatted_commands.append(command.format(ping=f"<@{team.bot_user_id}>"))

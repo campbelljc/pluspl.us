@@ -1,7 +1,10 @@
 from .. import config
 
 shop_options = [
-    (1, 0, 'Hint for Assignment 1 private test')
+    # opt. number, num. coins, description
+    (1,    100, 'number of passing vs. failing private tests on your submission for Assignment 1'),
+    (2,   1000, 'information (test title, expected output, submission output) on first failing private test on your submission for Assignment 1'),
+    (3, 100000, 'sticker (see discussion board for types) (first come first serve)')
 ]
 
 def get_shop_option(option_num):
@@ -20,7 +23,7 @@ def shop_text(team):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"Hey! Here's what you can exchange for your coins. "
+                "text": f"Hey! Here's what you can redeem for your coins. "
             }
         },
         {
@@ -34,7 +37,7 @@ def shop_text(team):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"Type *<@{team.bot_user_id}> exchange [option_number]* to initiate an exchange."
+                "text": f"Type *<@{team.bot_user_id}> redeem [option_number]* to redeem."
             }
         }
     ]
