@@ -87,9 +87,10 @@ def process_incoming_message(event_data):
         print("Processed help for team " + team.id)
         return "OK", 200
     elif "shop" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
+        user = Thing.query.filter_by(item=user.lower(), team=team).first()
         team.slack_client.chat_postMessage(
             channel=channel,
-            blocks=shop_text(team)
+            blocks=shop_text(team, user.total_points)
         )
         print("Processed shop for team " + team.id)
         return "OK", 200
@@ -174,7 +175,7 @@ def get_assignment_submission(team, user):
 
     # retrieve list of assignment's submissions
     submissions = this_assignment.list_submissions(student=email)
-    return submissionss
+    return submissions
 
 def process_redeem(user, team, channel, thread_ts, option_num):
     if str(option_num) == "1": # number of passing vs. failing private tests on your submission for Assignment 1

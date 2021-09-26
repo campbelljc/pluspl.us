@@ -11,19 +11,19 @@ def get_shop_option(option_num):
     assert shop_options[option_num-1][0] == option_num
     return shop_options[option_num-1]
 
-def shop_text(team):
+def shop_text(team, coins):
     option_texts = []
     for option in shop_options:
         option_texts.append(f'*[{option[0]}]* (*{option[1]} coins*) {option[2]}')
     
-    option_texts += ['\nOther options will be available as the term continues.']
+    option_texts += ['\nOther options will be available as the term continues.', f'You currently have {coins} coins.']
     
     shop_block = [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"Hey! Here's what you can redeem for your coins. "
+                "text": f"Hey! Here's what you can redeem for your coins. (More details can be found on the discussion board.)"
             }
         },
         {
