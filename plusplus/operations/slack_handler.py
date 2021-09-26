@@ -114,9 +114,9 @@ def process_incoming_message(event_data):
                     # send message back & send message to TA
                     assert user.ta_id is not None
                     if process_redeem(user, team, channel, thread_ts, option_num):
-                        post_message(f'Your point balance is now {user.total_points}.', team, channel, thread_ts=thread_ts)
                         update_points(user, '-=', pts, reason=f'Redeemed {pts} points for {desc}') # discard generated msgs
-                        post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem {desc}.', team, user.ta_id.upper())
+                        post_message(f'Your point balance is now {user.total_points}.', team, channel, thread_ts=thread_ts)
+                        post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem "{desc}".', team, user.ta_id.upper())
                     else:
                         post_message(f'Error - could not redeem. Point balance unchanged.', team, channel, thread_ts=thread_ts)
         
@@ -188,11 +188,15 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         
         num_tests, passed_tests = 0, 0
         for test in submission.tests:
+            test_case = codepost.test_case.retrieve(id=test.testCase)
+            if test_case.pointsFail == 0:
+                continue
+            
             num_tests += 1
             if test.passed:
                 passed_tests += 1
         
-        post_message(f"The results of the private tests on your latest Assignment 1 submission to codePost are as follows:\nPassed:{passed_tests}\nFailed:{num_tests-passed_tests}\nTotal tests:{num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.", team, channel, thread_ts=thread_ts)
+        post_message(f"The results of the private tests on your latest Assignment 1 submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.", team, channel, thread_ts=thread_ts)
         
         return True
     
@@ -205,16 +209,18 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         submission = submissions[0]
         failed_test = None
         for test in submission.tests:
+            test_case = codepost.test_case.retrieve(id=test.testCase)
+            if test_case.pointsFail == 0:
+                continue
+            
             if not test.passed:
-                failed_test = test
                 break
+
         if failed_test is None:
             post_message(f"Error: Your submission for Assignment 1 is not failing any tests at the moment.", team, channel, thread_ts=thread_ts)
             return False
         
-        test_logs = failed_test.logs
-        test_id = failed_test.testCase
-        test_case = codepost.test_case.retrieve(id=test_id)
+        test_logs = test.logs
         test_desc = test_case.description
         test_cat_id = test_case.testCategory
         test_cat = codepost.test_category.retrieve(id=test_cat_id)
