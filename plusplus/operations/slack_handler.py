@@ -65,6 +65,9 @@ def process_incoming_message(event_data):
     user = event.get('user').lower()
     channel = event.get('channel')
     channel_type = event.get('channel_type')
+    
+    if user.lower() == config.SLACK_USER_ID.lower():
+        return "Status: OK" # ignore messages sent by bot
 
     # load/update team
     team = SlackTeam.query.filter_by(id=event_data['team_id']).first()
