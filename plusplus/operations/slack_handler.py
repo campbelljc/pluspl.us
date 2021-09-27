@@ -99,8 +99,12 @@ def process_incoming_message(event_data):
         return "OK", 200
     elif "redeem" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
         option = message.split("redeem")[-1].strip()
-        if not all(c.isdigit() for c in option):
-            post_message('Did not recognize that option. Did you enter a number?', team, channel, thread_ts=thread_ts)
+        unrecognized = ''
+        for c in option:
+            if not c.isdigit():
+                unrecognized += c
+        if len(unrecognized) > 0:
+            post_message(f'You entered "{option}", but I did not recognize "{unrecognized}".', team, channel, thread_ts=thread_ts)
         else:
             option = int(option)
             option_info = get_shop_option(option)

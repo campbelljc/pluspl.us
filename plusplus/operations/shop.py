@@ -37,7 +37,7 @@ def shop_text(team, coins):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"Type *<@{team.bot_user_id}> redeem [option_number]* to redeem."
+                "text": f"Type *<@{team.bot_user_id}> redeem [option_number]* to redeem. E.g., *<@{team.bot_user_id}> redeem 1*"
             }
         }
     ]
