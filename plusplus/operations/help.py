@@ -3,7 +3,9 @@ from .. import config
 
 def help_text(team):
     commands = ["• *{ping} leaderboard*: show the current high scores",
-                "• *{ping} shop*: show the list of things available to redeem for coins"]
+                "• *{ping} shop*: show the list of things available to redeem for coins",
+                "• *{ping} help*: show this list of commands",
+                "• *{ping} redeem [x]*: redeem your coins for option [x] from the shop listing"]
     formatted_commands = list()
     for command in commands:
         formatted_commands.append(command.format(ping=f"<@{team.bot_user_id}>"))
@@ -27,7 +29,7 @@ def help_text(team):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"Still need help? Send us an email at {config.SUPPORT_EMAIL}!"
+                "text": f"Still need help? Please get in touch with your TA!"
             }
         }
     ]

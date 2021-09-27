@@ -39,7 +39,7 @@ def generate_leaderboard(team=None, losers=False):
                     #},
                     {
                         "type": "mrkdwn",
-                        "text": "*Users*\n" + numbered_users
+                        "text": "*Coin holders*\n" + numbered_users
                     }
                 ]
     }
