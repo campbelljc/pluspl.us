@@ -124,6 +124,7 @@ def process_incoming_message(event_data):
                         update_points(user, '-=', pts, reason=f'Redeemed {pts} points for {desc}') # discard generated msgs
                         post_message(f'Your point balance is now {user.total_points}.', team, channel, thread_ts=thread_ts)
                         post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem "{desc}".', team, user.ta_id.upper())
+                        post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem "{desc}".', team, config.SLACK_ADMIN_USER_ID.upper())
                     else:
                         post_message(f'Error - could not redeem. Point balance unchanged.', team, channel, thread_ts=thread_ts)
         
