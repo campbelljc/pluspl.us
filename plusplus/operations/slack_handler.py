@@ -93,7 +93,7 @@ def process_incoming_message(event_data):
         user = Thing.query.filter_by(item=user.lower(), team=team).first()
         team.slack_client.chat_postMessage(
             channel=channel,
-            blocks=shop_text(team, user.total_points)
+            blocks=shop_text(team, user.total_points if user is not None else 0)
         )
         print("Processed shop for team " + team.id)
         return "OK", 200
@@ -116,7 +116,7 @@ def process_incoming_message(event_data):
                 post_message('Your user ID is not recognized (this can happen if you have no coins yet).', team, channel, thread_ts=thread_ts)
             else:
                 if user.total_points < pts:
-                    post_message(f'This option costs {pts}, but you only have {user.total_points}.', team, channel, thread_ts=thread_ts)
+                    post_message(f'This option costs {pts} coins, but you have {user.total_points}.', team, channel, thread_ts=thread_ts)
                 else:
                     # send message back & send message to TA
                     assert user.ta_id is not None
