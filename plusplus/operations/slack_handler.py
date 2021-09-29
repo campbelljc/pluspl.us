@@ -203,8 +203,11 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             num_tests += 1
             if test.passed:
                 passed_tests += 1
+                
+        message = f"The results of the private tests on your latest Assignment 1 submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment."
+        post_message(message, team, channel, thread_ts=thread_ts)
+        post_message(f"Student received following message: {message}", team, config.SLACK_ADMIN_USER_ID.upper())
         
-        post_message(f"The results of the private tests on your latest Assignment 1 submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.", team, channel, thread_ts=thread_ts)
         
         return True
     
@@ -235,7 +238,9 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         test_cat = codepost.test_category.retrieve(id=test_cat_id)
         test_cat_name = test_cat.name
         
-        post_message(f"The first failing private test for your Assignment 1 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc}\nLogs: {test_logs}", team, channel, thread_ts=thread_ts)
+        message = f"The first failing private test for your Assignment 1 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc}\nLogs: {test_logs}"
+        post_message(message, team, channel, thread_ts=thread_ts)
+        post_message(f"Student received following message: {message}", team, config.SLACK_ADMIN_USER_ID.upper())
         
         return True
         
