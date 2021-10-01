@@ -232,7 +232,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             post_message(f"Error: Your submission for Assignment 1 is not failing any tests at the moment.", team, channel, thread_ts=thread_ts)
             return False
         
-        test_logs = failed_test.logs
+        test_logs = failed_test.logs + "\n" + test_case.explanation
         test_desc = test_case.description
         test_cat_id = test_case.testCategory
         test_cat = codepost.test_category.retrieve(id=test_cat_id)
