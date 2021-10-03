@@ -238,7 +238,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         test_cat = codepost.test_category.retrieve(id=test_cat_id)
         test_cat_name = test_cat.name
         
-        message = f"The first failing private test for your Assignment 1 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc}\nLogs: {test_logs}"
+        message = f"The first failing private test for your Assignment 1 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc}\nLogs: {test_logs}\n\nNote: Please do not discuss this private test with other students nor post on the discussion board about it."
         post_message(message, team, channel, thread_ts=thread_ts)
         post_message(f"Student received following message: {message}", team, config.SLACK_ADMIN_USER_ID.upper())
         
