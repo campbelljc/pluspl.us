@@ -99,6 +99,7 @@ def process_incoming_message(event_data):
         return "OK", 200
     elif "redeem" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
         option = message.split("redeem")[-1].strip().replace("*", "")
+        print("redeem", message, user, channel)
         unrecognized = ''
         for c in option:
             if not c.isdigit():
