@@ -99,6 +99,9 @@ def process_incoming_message(event_data):
         return "OK", 200
     elif "redeem" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
         option = message.split("redeem")[-1].strip().replace("*", "")
+        if channel.lower() == 'C02DZ5ACZ1U'.lower():
+            post_message(f'To redeem something, please open a DM with CoinsBot and enter your commands there. Thanks!.', team, channel, thread_ts=thread_ts)
+            return "OK", 200
         print("redeem", message, user, channel)
         unrecognized = ''
         for c in option:
