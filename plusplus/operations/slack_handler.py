@@ -100,7 +100,7 @@ def process_incoming_message(event_data):
     elif "redeem" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
         option = message.split("redeem")[-1].strip().replace("*", "")
         if channel.lower() == 'C02DZ5ACZ1U'.lower():
-            post_message(f'To redeem something, please open a DM with CoinsBot and enter your commands there. Thanks!.', team, channel, thread_ts=thread_ts)
+            post_message(f'To redeem something, please open a DM with CoinsBot and enter your commands there. Thanks!', team, channel, thread_ts=thread_ts)
             return "OK", 200
         print("redeem", message, user, channel)
         unrecognized = ''
@@ -124,13 +124,16 @@ def process_incoming_message(event_data):
                 else:
                     # send message back & send message to TA
                     assert user.ta_id is not None
-                    if process_redeem(user, team, channel, thread_ts, option_num):
-                        update_points(user, '-=', pts, reason=f'Redeemed {pts} points for {desc}') # discard generated msgs
-                        post_message(f'Your point balance is now {user.total_points}.', team, channel, thread_ts=thread_ts)
-                        post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem "{desc}".', team, user.ta_id.upper())
-                        post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem "{desc}".', team, config.SLACK_ADMIN_USER_ID.upper())
+                    status, message = process_redeem(user, team, channel, thread_ts, option_num)
+                    if not status:
+                        message += '\nCould not redeem (points balance unchanged).'
+                        post_message(message, team, channel, thread_ts=thread_ts)
                     else:
-                        post_message(f'Error - could not redeem. Point balance unchanged.', team, channel, thread_ts=thread_ts)
+                        update_points(user, '-=', pts, reason=f'Redeemed {pts} points for {desc}') # discard generated msgs
+                        message += f'\n\nYour point balance is now {user.total_points}.'
+                        post_message(message, team, channel, thread_ts=thread_ts)
+                        #post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem "{desc}".', team, user.ta_id.upper())
+                        post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem "{desc}". They received the following message:\n{message}', team, config.SLACK_ADMIN_USER_ID.upper())
         
         print("Processed redeem for team " + team.id)
         return "OK", 200
@@ -139,11 +142,7 @@ def process_incoming_message(event_data):
     # handle user point operations
 
     user_match = user_exp.match(message)
-    if not user_match:
-        return "OK", 200
-    
-    if user != config.SLACK_ADMIN_USER_ID:
-        post_message('Sorry, only the server admin can add points!', team, channel, thread_ts=thread_ts)
+    if not user_match or user != config.SLACK_ADMIN_USER_ID:
         return "OK", 200
 
     if ';ta_id=' in message:
@@ -181,20 +180,23 @@ def get_assignment_submission(team, user):
         raise Exception("Couldn't find course with name %s and period %s" % (config.COURSE_CODE, config.COURSE_TERM))
     this_course = course_list[0]
 
-    this_assignment = this_course.assignments.by_name(name="Assignment 1")
+    this_assignment = this_course.assignments.by_name(name="Assignment 2")
     if this_assignment is None:
-        raise Exception("ERROR: couldn't find assignment with name %s in specified course" % ("Assignment 1"))
+        raise Exception("ERROR: couldn't find assignment with name %s in specified course" % ("Assignment 2"))
 
     # retrieve list of assignment's submissions
     submissions = this_assignment.list_submissions(student=email)
     return submissions
 
 def process_redeem(user, team, channel, thread_ts, option_num):
-    if str(option_num) == "1": # number of passing vs. failing private tests on your submission for Assignment 1
+    if str(option_num) == "1" or str(option_num) == "2":
+        return False, "It is not yet possible to redeem coins for Assignment 2. Please watch the discussion board as we will post there when the option will be available."
+    
+    if str(option_num) == "1": # number of passing vs. failing private tests on your submission for Assignment 2
         submissions = get_assignment_submission(team, user)
         if len(submissions) == 0:
-            post_message(f"Could not find a submission for Assignment 1 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not.", team, channel, thread_ts=thread_ts)
-            return False
+            message = f"Could not find a submission for Assignment 2 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
+            return False, message
     
         submission = submissions[0]
         
@@ -208,18 +210,15 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             if test.passed:
                 passed_tests += 1
                 
-        message = f"The results of the private tests on your latest Assignment 1 submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment."
-        post_message(message, team, channel, thread_ts=thread_ts)
-        post_message(f"Student received following message: {message}", team, config.SLACK_ADMIN_USER_ID.upper())
+        message = f"The results of the private tests on your latest Assignment 2 submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment."
         
+        return True, message
         
-        return True
-    
     elif str(option_num) == "2":
         submissions = get_assignment_submission(team, user)
         if len(submissions) == 0:
-            post_message(f"Error: Could not find a submission for Assignment 1 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not.", team, channel, thread_ts=thread_ts)
-            return False
+            message = f"Error: Could not find a submission for Assignment 2 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
+            return False, message
     
         submission = submissions[0]
         failed_test = None
@@ -233,8 +232,8 @@ def process_redeem(user, team, channel, thread_ts, option_num):
                 break
 
         if failed_test is None:
-            post_message(f"Error: Your submission for Assignment 1 is not failing any tests at the moment.", team, channel, thread_ts=thread_ts)
-            return False
+            message = f"Error: Your submission for Assignment 2 is not failing any tests at the moment."
+            return False, message
         
         test_logs = failed_test.logs + "\n" + test_case.explanation
         test_desc = test_case.description
@@ -242,15 +241,13 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         test_cat = codepost.test_category.retrieve(id=test_cat_id)
         test_cat_name = test_cat.name
         
-        message = f"The first failing private test for your Assignment 1 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc}\nLogs: {test_logs}\n\nNote: Please do not discuss this private test with other students nor post on the discussion board about it."
-        post_message(message, team, channel, thread_ts=thread_ts)
-        post_message(f"Student received following message: {message}", team, config.SLACK_ADMIN_USER_ID.upper())
-        
-        return True
+        message = f"The first failing private test for your Assignment 2 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc}\nLogs: {test_logs}\n\nNote: Please do not discuss this private test with other students nor post on the discussion board about it."        
+        return True, message
         
     elif str(option_num) == "3":
-        post_message(f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption.", team, channel, thread_ts=thread_ts)
+        message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
+        return True, message
     
     else:
-        post_message("Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3.", team, channel, thread_ts=thread_ts)
-        return False
+        message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
+        return False, message
