@@ -189,8 +189,8 @@ def get_assignment_submission(team, user):
     return submissions
 
 def process_redeem(user, team, channel, thread_ts, option_num):
-    if str(option_num) == "1" or str(option_num) == "2":
-        return False, "It is not yet possible to redeem coins for Assignment 2. Please watch the discussion board as we will post there when the option will be available."
+    #if str(option_num) == "1" or str(option_num) == "2":
+    #    return False, "It is not yet possible to redeem coins for Assignment 2. Please watch the discussion board as we will post there when the option will be available."
     
     if str(option_num) == "1": # number of passing vs. failing private tests on your submission for Assignment 2
         submissions = get_assignment_submission(team, user)
