@@ -219,6 +219,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         if len(submissions) == 0:
             message = f"Error: Could not find a submission for Assignment 2 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
             return False, message
+        submission = submissions[0]
         
         test_cases = {}
         test_cats = {}
