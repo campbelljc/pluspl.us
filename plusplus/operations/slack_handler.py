@@ -219,14 +219,24 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         if len(submissions) == 0:
             message = f"Error: Could not find a submission for Assignment 2 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
             return False, message
-    
-        submission = submissions[0]
+        
+        test_cases = {}
+        test_cats = {}
+
         failed_test = None
         for test in submission.tests:
-            test_case = codepost.test_case.retrieve(id=test.testCase)
-            if test_case.pointsFail == 0:
+            if test.testCase not in test_cases:
+                test_cases[test.testCase] = codepost.test_case.retrieve(id=test.testCase)
+                test_cat = test_cases[test.testCase].testCategory
+                if test_cat not in test_cats:
+                    test_cats[test_cat] = codepost.test_category.retrieve(id=test_cat)
+        
+            test_case = test_cases[test.testCase]
+            test_cat = test_cats[test_case.testCategory]
+        
+            if '(private)' not in test_cat.name:
                 continue
-            
+        
             if not test.passed:
                 failed_test = test
                 break
