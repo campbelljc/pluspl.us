@@ -9,7 +9,7 @@ def generate_leaderboard(team=None):
     
     all_users = Thing.query.filter_by(**user_args).order_by(ordering)
     total_coins = 0
-    for user in users:
+    for user in all_users:
         total_coins += user.total_points
     
     top_ten = all_users.limit(10)
