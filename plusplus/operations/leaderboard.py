@@ -3,7 +3,6 @@ import json
 
 
 def generate_leaderboard(team=None):
-    header = "Here's the current leaderboard:"
     ordering = Thing.total_points.desc()
     user_args = {"user": True, "team": team}
     
@@ -24,7 +23,7 @@ def generate_leaderboard(team=None):
         all_time_pts.append((user_pts, user))
     all_time_pts.sort(reverse=True, key=lambda tup: tup[0])
     
-    top_all_time = all_time_pts[:10]
+    top_all_time = all_time_pts[1:11] # hack: remove me
     
     #ordering_all_time = Thing.total_all_time_points.desc()
     #all_time_top_ten = Thing.query.filter_by(**user_args).order_by(ordering_all_time)
@@ -35,6 +34,7 @@ def generate_leaderboard(team=None):
     formatted_all_time_users = [f"<@{user.item.upper()}> ({pts})" for pts, user in top_all_time]
     numbered_all_time_users = generate_numbered_list(formatted_all_time_users)
 
+    header = f"Here's the current leaderboard (total coins in circulation: {total_coins}):"
     leaderboard_header = {"type": "section",
                           "text":
                               {
@@ -45,10 +45,6 @@ def generate_leaderboard(team=None):
     body = {
         "type": "section",
                 "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Total number of coins in circulation*: {total_coins}"
-                    },
                     {
                         "type": "mrkdwn",
                         "text": f"*Coin holders*:\n" + numbered_users
