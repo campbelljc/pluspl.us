@@ -24,6 +24,7 @@ def generate_leaderboard(team=None):
     all_time_pts.sort(reverse=True, key=lambda tup: tup[0])
     
     top_all_time = all_time_pts[1:11] # hack: remove me
+    total_coins -= all_time_pts[0][0] # ^
     
     #ordering_all_time = Thing.total_all_time_points.desc()
     #all_time_top_ten = Thing.query.filter_by(**user_args).order_by(ordering_all_time)
@@ -34,7 +35,7 @@ def generate_leaderboard(team=None):
     formatted_all_time_users = [f"<@{user.item.upper()}> ({pts})" for pts, user in top_all_time]
     numbered_all_time_users = generate_numbered_list(formatted_all_time_users)
 
-    header = f"Here's the current leaderboard (total coins in circulation: {total_coins}):"
+    header = f"Here's the current leaderboard.\nTotal coins in circulation: {total_coins}.\nTotal number of students with points:{len(all_users)-1}"
     leaderboard_header = {"type": "section",
                           "text":
                               {
