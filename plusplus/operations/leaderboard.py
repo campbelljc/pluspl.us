@@ -24,13 +24,15 @@ def generate_leaderboard(team=None):
         all_time_pts.append((user_pts, user))
     all_time_pts.sort(reverse=True, key=lambda tup: tup[0])
     
+    top_all_time = all_time_pts[:10]
+    
     #ordering_all_time = Thing.total_all_time_points.desc()
     #all_time_top_ten = Thing.query.filter_by(**user_args).order_by(ordering_all_time)
     
     formatted_users = [f"<@{user.item.upper()}> ({user.total_points})" for user in top_ten]
     numbered_users = generate_numbered_list(formatted_users)
 
-    formatted_all_time_users = [f"<@{user.item.upper()}> ({pts})" for pts, user in all_time_pts]
+    formatted_all_time_users = [f"<@{user.item.upper()}> ({pts})" for pts, user in top_all_time]
     numbered_all_time_users = generate_numbered_list(formatted_all_time_users)
 
     leaderboard_header = {"type": "section",
