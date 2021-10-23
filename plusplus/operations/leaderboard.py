@@ -13,12 +13,21 @@ def generate_leaderboard(team=None):
         total_coins += user.total_points
     
     top_ten = all_users.limit(10)
-    all_time_top_ten = Thing.query.filter_by(**user_args).order_by(Thing.total_all_time_points.desc())
+    
+    # get all time top 10
+    all_time_pts = []
+    for user in all_users:
+        user_pts = db.func.sum(user.points.filter(Point.value > 0))
+        all_time_pts.append(user_pts, user)
+    all_time_pts.sort(reverse=True)
+    
+    #ordering_all_time = Thing.total_all_time_points.desc()
+    #all_time_top_ten = Thing.query.filter_by(**user_args).order_by(ordering_all_time)
     
     formatted_users = [f"<@{user.item.upper()}> ({user.total_points})" for user in top_ten]
     numbered_users = generate_numbered_list(formatted_users)
 
-    formatted_all_time_users = [f"<@{user.item.upper()}> ({user.total_points})" for user in all_time_top_ten]
+    formatted_all_time_users = [f"<@{user.item.upper()}> ({pts})" for pts, user in all_time_pts]
     numbered_all_time_users = generate_numbered_list(formatted_all_time_users)
 
     leaderboard_header = {"type": "section",

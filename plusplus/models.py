@@ -50,8 +50,8 @@ class Thing(db.Model):
     @aggregated('points', db.Column(db.Integer))
     def total_points(self):
         return db.func.sum(Point.value)
-    def total_all_time_points(self):
-        return db.func.sum(Point.query.filter(Point.value > 0))
+    #def total_all_time_points(self):
+    #    return db.func.sum(Point.query.filter(Point.value > 0))
     points = db.relationship("Point", primaryjoin="and_(Thing.id==Point.awardee_id)")
     user = db.Column(db.Boolean)
     team_id = db.Column(db.String, db.ForeignKey('SlackTeam.id'))
