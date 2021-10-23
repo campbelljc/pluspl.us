@@ -17,7 +17,10 @@ def generate_leaderboard(team=None):
     # get all time top 10
     all_time_pts = []
     for user in all_users:
-        user_pts = db.func.sum(user.points.filter(Point.value > 0))
+        user_pts = 0
+        for point in user.points:
+            if point.value > 0:
+                user_pts += point_value
         all_time_pts.append(user_pts, user)
     all_time_pts.sort(reverse=True)
     
