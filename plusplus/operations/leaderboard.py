@@ -2,31 +2,24 @@ from ..models import Thing
 import json
 
 
-def generate_leaderboard(team=None, losers=False):
-    if losers:
-        ordering = Thing.total_points.asc()
-        header = "Here's the current loserboard:"
-    else:
-        ordering = Thing.total_points.desc()
-        header = "Here's the current leaderboard:"
-
-    # filter args
+def generate_leaderboard(team=None):
+    header = "Here's the current leaderboard:"
+    ordering = Thing.total_points.desc()
     user_args = {"user": True, "team": team}
-    #thing_args = {"user": False, "team": team}
-
-    users = Thing.query.filter_by(**user_args).order_by(ordering).limit(10)
-    #things = Thing.query.filter_by(**thing_args).order_by(ordering).limit(10)
     
     all_users = Thing.query.filter_by(**user_args).order_by(ordering)
     total_coins = 0
     for user in users:
         total_coins += user.total_points
     
-    #formatted_things = [f"{thing.item} ({thing.total_points})" for thing in things]
-    #numbered_things = generate_numbered_list(formatted_things)
-
-    formatted_users = [f"<@{user.item.upper()}> ({user.total_points})" for user in users]
+    top_ten = all_users.limit(10)
+    all_time_top_ten = Thing.query.filter_by(**user_args).order_by(Thing.total_all_time_points.desc())
+    
+    formatted_users = [f"<@{user.item.upper()}> ({user.total_points})" for user in top_ten]
     numbered_users = generate_numbered_list(formatted_users)
+
+    formatted_all_time_users = [f"<@{user.item.upper()}> ({user.total_points})" for user in all_time_top_ten]
+    numbered_all_time_users = generate_numbered_list(formatted_all_time_users)
 
     leaderboard_header = {"type": "section",
                           "text":
@@ -38,13 +31,17 @@ def generate_leaderboard(team=None, losers=False):
     body = {
         "type": "section",
                 "fields": [
-                    #{
-                    #    "type": "mrkdwn",
-                    #    "text": "*Things*\n" + numbered_things
-                    #},
                     {
                         "type": "mrkdwn",
-                        "text": f"*Total number of coins in circulation*: {total_coins}\n*Coin holders*\n" + numbered_users
+                        "text": f"*Total number of coins in circulation*: {total_coins}"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": f"*Coin holders*:\n" + numbered_users
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": f"*All-time coin earners (including coins already redeemed)*:\n" + numbered_all_time_users
                     }
                 ]
     }
