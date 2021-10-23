@@ -21,7 +21,7 @@ def generate_leaderboard(team=None):
         for point in user.points:
             if point.value > 0:
                 user_pts += point.value
-        all_time_pts.append(user_pts, user)
+        all_time_pts.append((user_pts, user))
     all_time_pts.sort(reverse=True)
     
     #ordering_all_time = Thing.total_all_time_points.desc()
