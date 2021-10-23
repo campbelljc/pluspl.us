@@ -12,13 +12,18 @@ def generate_leaderboard(team=None, losers=False):
 
     # filter args
     user_args = {"user": True, "team": team}
-    thing_args = {"user": False, "team": team}
+    #thing_args = {"user": False, "team": team}
 
     users = Thing.query.filter_by(**user_args).order_by(ordering).limit(10)
-    things = Thing.query.filter_by(**thing_args).order_by(ordering).limit(10)
-
-    formatted_things = [f"{thing.item} ({thing.total_points})" for thing in things]
-    numbered_things = generate_numbered_list(formatted_things)
+    #things = Thing.query.filter_by(**thing_args).order_by(ordering).limit(10)
+    
+    all_users = Thing.query.filter_by(**user_args).order_by(ordering)
+    total_coins = 0
+    for user in users:
+        total_coins += user.total_points
+    
+    #formatted_things = [f"{thing.item} ({thing.total_points})" for thing in things]
+    #numbered_things = generate_numbered_list(formatted_things)
 
     formatted_users = [f"<@{user.item.upper()}> ({user.total_points})" for user in users]
     numbered_users = generate_numbered_list(formatted_users)
@@ -39,7 +44,7 @@ def generate_leaderboard(team=None, losers=False):
                     #},
                     {
                         "type": "mrkdwn",
-                        "text": "*Coin holders*\n" + numbered_users
+                        "text": f"*Total number of coins in circulation*: {total_coins}\n*Coin holders*\n" + numbered_users
                     }
                 ]
     }
