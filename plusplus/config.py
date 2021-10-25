@@ -1,6 +1,6 @@
 import os
 
-VERSION = 0.2
+VERSION = 0.3
 NAME = os.environ.get("NAME")
 SLACK_CLIENT_ID = os.environ.get('SLACK_CLIENT_ID')
 SLACK_CLIENT_SECRET = os.environ.get('SLACK_CLIENT_SECRET')

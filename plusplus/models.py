@@ -17,6 +17,7 @@ class SlackTeam(db.Model):
     team_name = db.Column(db.String)
     team_domain = db.Column(db.String)
     team_email_domain = db.Column(db.String)
+    #midterm_pool_points = db.Column(db.Integer, default=0)
 
     def __init__(self, request_json):
         self.update(request_json)
@@ -40,6 +41,9 @@ class SlackTeam(db.Model):
         self.team_name = response['team']['name']
         self.team_domain = f"https://{response['team']['domain']}.slack.com"
         self.team_email_domain = response['team']['email_domain']
+    
+    #def add_to_midterm_pool(self, pts):
+    #    self.midterm_pool_points += pts
 
 class Thing(db.Model):
     __tablename__ = 'Thing'

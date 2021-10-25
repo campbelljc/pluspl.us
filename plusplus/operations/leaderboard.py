@@ -35,7 +35,7 @@ def generate_leaderboard(team=None):
     formatted_all_time_users = [f"<@{user.item.upper()}> ({pts})" for pts, user in top_all_time]
     numbered_all_time_users = generate_numbered_list(formatted_all_time_users)
 
-    header = f"Here's the current leaderboard.\nTotal coins in circulation: {total_coins}.\nTotal number of students with points:{all_users.count()-1}"
+    header = f"Here's the current leaderboard.\nTotal coins in circulation: {total_coins}.\nTotal number of students with points: {all_users.count()-1}"
     leaderboard_header = {"type": "section",
                           "text":
                               {

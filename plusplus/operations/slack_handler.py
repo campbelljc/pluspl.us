@@ -266,8 +266,11 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         return True, message
         
     elif str(option_num) == "3":
-        message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
+        team.add_to_midterm_pool(1000)
+        message = f"You have added 1000 points to the midterm pool. The pool is now at {team.midterm_pool_points}."
         return True, message
+        #message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
+        #return True, message
     
     else:
         message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
