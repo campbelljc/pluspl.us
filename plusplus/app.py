@@ -30,7 +30,7 @@ def create_app():
 
     # blueprint setup
 
-    from plusplus.slack import slack as slack_blueprint
+    from plusplus.slack_integration import slack as slack_blueprint
     from plusplus.views import views as views_blueprint
     app.register_blueprint(slack_blueprint, url_prefix='/slack')
     app.register_blueprint(views_blueprint)

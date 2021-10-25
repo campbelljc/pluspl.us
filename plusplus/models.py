@@ -8,7 +8,7 @@ db = SQLAlchemy()
 
 class SlackTeam(db.Model):
     __tablename__ = 'SlackTeam'
-    id = db.Column(db.String, primary_key=True, unique=True)
+    id = db.Column(db.String, primary_key=True)
     bot_user_id = db.Column(db.String)
     bot_access_token = db.Column(db.String)
     things = db.relationship("Thing", backref="team")
@@ -17,7 +17,7 @@ class SlackTeam(db.Model):
     team_name = db.Column(db.String)
     team_domain = db.Column(db.String)
     team_email_domain = db.Column(db.String)
-    #midterm_pool_points = db.Column(db.Integer, default=0)
+    midterm_pool_points = db.Column(db.Integer, default=0)
 
     def __init__(self, request_json):
         self.update(request_json)
@@ -42,12 +42,12 @@ class SlackTeam(db.Model):
         self.team_domain = f"https://{response['team']['domain']}.slack.com"
         self.team_email_domain = response['team']['email_domain']
     
-    #def add_to_midterm_pool(self, pts):
-    #    self.midterm_pool_points += pts
+    def add_to_midterm_pool(self, pts):
+        self.midterm_pool_points += pts
 
 class Thing(db.Model):
     __tablename__ = 'Thing'
-    id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     item = db.Column(db.String)
     ta_id = db.Column(db.String)
 
@@ -77,7 +77,7 @@ class Thing(db.Model):
 
 class Point(db.Model):
     __tablename__ = 'Point'
-    id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     awardee_id = db.Column(db.Integer, db.ForeignKey('Thing.id'))
     value = db.Column(db.Integer, default=0)
     reason = db.Column(db.String, default="None Provided")
