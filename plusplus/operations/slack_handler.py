@@ -12,6 +12,7 @@ import codepost
 user_exp = re.compile(r"<@([A-Za-z0-9]+)> *(\+\+|\-\-|==|\+\=|\-\=) ([0-9]+)")
 thing_exp = re.compile(r"#([A-Za-z0-9\.\-_@$!\*\(\)\,\?\/%\\\^&\[\]\{\"':; ]+)(\+\+|\-\-|==)")              
 
+GENERAL_CHANNEL = 'C02DZ5ACZ1U'
 
 def get_id_for_name(team, name):
     response = team.slack_client.users_list()
@@ -99,7 +100,7 @@ def process_incoming_message(event_data):
         return "OK", 200
     elif "redeem" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
         option = message.split("redeem")[-1].strip().replace("*", "")
-        if channel.lower() == 'C02DZ5ACZ1U'.lower():
+        if channel.lower() == GENERAL_CHANNEL.lower():
             post_message(f'To redeem something, please open a DM with CoinsBot and enter your commands there. Thanks!', team, channel, thread_ts=thread_ts)
             return "OK", 200
         print("redeem", message, user, channel)
@@ -267,7 +268,9 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         
     elif str(option_num) == "3":
         team.add_to_midterm_pool(1000)
-        message = f"You have added 1000 points to the midterm pool. The pool is now at {team.midterm_pool_points}."
+        message = f"You have added 1000 points to the midterm hint pool. The pool is now at {team.midterm_pool_points}."
+        if team.midterm_pool_points % 5000 == 0:
+            post_message(f"The midterm points pool is now at {team.midterm_pool_points}. Further message will be posted after an additional 5000 is contributed.", team, GENERAL_CHANNEL)
         return True, message
         #message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
         #return True, message
