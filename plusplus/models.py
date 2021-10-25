@@ -43,7 +43,10 @@ class SlackTeam(db.Model):
         self.team_email_domain = response['team']['email_domain']
     
     def add_to_midterm_pool(self, pts):
-        self.midterm_pool_points += pts
+        if self.midterm_pool_points is None:
+            self.midterm_pool_points = pts
+        else:
+            self.midterm_pool_points += pts
 
 class Thing(db.Model):
     __tablename__ = 'Thing'
