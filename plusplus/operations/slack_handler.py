@@ -275,6 +275,8 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             post_message(f"The midterm points pool is now at {team.midterm_pool_points}. Further message will be posted after an additional 5000 is contributed.", team, GENERAL_CHANNEL)
         if team.midterm_pool_points % 30000 == 0:
             post_message(f"A midterm hint has been unlocked! Please check the discussion board later in the day.", team, GENERAL_CHANNEL)
+            post_message(f"Let's flip a coin to see if one hint or two will be provided!", team, GENERAL_CHANNEL)
+            post_message(f"/coinflip", team, GENERAL_CHANNEL)
         return True, message
         #message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
         #return True, message
