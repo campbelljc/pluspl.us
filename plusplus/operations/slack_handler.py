@@ -63,8 +63,8 @@ def process_incoming_message(event_data):
     else:
         thread_ts = None # message not from a thread
 
-    orig_message = message
-    message = event.get('text').lower()
+    orig_message = event.get('text')
+    message = orig_message.lower()
     user = event.get('user').lower()
     channel = event.get('channel')
     channel_type = event.get('channel_type')
