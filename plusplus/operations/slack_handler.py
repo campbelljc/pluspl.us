@@ -63,6 +63,7 @@ def process_incoming_message(event_data):
     else:
         thread_ts = None # message not from a thread
 
+    orig_message = message
     message = event.get('text').lower()
     user = event.get('user').lower()
     channel = event.get('channel')
@@ -140,7 +141,7 @@ def process_incoming_message(event_data):
         print("Processed redeem for team " + team.id)
         return "OK", 200
     elif "msg" in message and (team.bot_user_id.lower() in message or channel_type == "im") and user == config.SLACK_ADMIN_USER_ID:
-        msg = message.split("msg")[-1].strip().replace("*", "")
+        msg = orig_message.split("msg")[-1].strip().replace("*", "")
         post_message(msg, team, GENERAL_CHANNEL)
 
     # handle user point operations
