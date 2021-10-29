@@ -138,7 +138,9 @@ def process_incoming_message(event_data):
         
         print("Processed redeem for team " + team.id)
         return "OK", 200
-        
+    elif "msg" in message and (team.bot_user_id.lower() in message or channel_type == "im") and user == config.SLACK_ADMIN_USER_ID:
+        msg = message.split("msg")[-1].strip().replace("*", "")
+        post_message(msg, team, GENERAL_CHANNEL)
 
     # handle user point operations
 
@@ -271,6 +273,8 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         message = f"You have added 1000 points to the midterm hint pool. The pool is now at {team.midterm_pool_points}."
         if team.midterm_pool_points % 5000 == 0:
             post_message(f"The midterm points pool is now at {team.midterm_pool_points}. Further message will be posted after an additional 5000 is contributed.", team, GENERAL_CHANNEL)
+        if team.midterm_pool_points % 30000 == 0:
+            post_message(f"A midterm hint has been unlocked! Please check the discussion board later in the day.", team, GENERAL_CHANNEL)
         return True, message
         #message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
         #return True, message
