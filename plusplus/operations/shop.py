@@ -31,7 +31,7 @@ def shop_text(team, coins):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "\n".join(option_texts)
+                "text": "No options are currently available." # "\n".join(option_texts)
             }
         },
         {
