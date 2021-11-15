@@ -79,9 +79,10 @@ def process_incoming_message(event_data):
     db.session.commit()
     
     if "leaderboard" in message and team.bot_user_id.lower() in message:
+        user = Thing.query.filter_by(item=user.lower(), team=team).first()
         team.slack_client.chat_postMessage(
             channel=channel,
-            blocks=generate_leaderboard(team=team)
+            blocks=generate_leaderboard(user, team=team)
         )
         print("Processed leaderboard for team " + team.id)
         return "OK", 200

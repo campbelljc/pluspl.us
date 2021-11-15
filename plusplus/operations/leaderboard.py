@@ -2,14 +2,17 @@ from ..models import Thing, db
 import json
 
 
-def generate_leaderboard(team=None):
+def generate_leaderboard(asker, team=None):
     ordering = Thing.total_points.desc()
     user_args = {"user": True, "team": team}
     
     all_users = Thing.query.filter_by(**user_args).order_by(ordering)
     total_coins = 0
-    for user in all_users:
+    asker_num = -1
+    for i, user in enumerate(all_users):
         total_coins += user.total_points
+        if user is not None and user.id == asker.id:
+            asker_num = i
     
     top_ten = all_users.limit(10)
     
@@ -23,6 +26,11 @@ def generate_leaderboard(team=None):
         all_time_pts.append((user_pts, user))
     all_time_pts.sort(reverse=True, key=lambda tup: tup[0])
     
+    asker_num_all_time = -1
+    for i, (user_pts, user) in enumerate(all_time_pts):
+        if user is not None and user.id == asker.id:
+            asker_num_all_time = i
+    
     top_all_time = all_time_pts[1:11] # hack: remove me
     total_coins -= all_time_pts[0][0] # ^
     
@@ -31,9 +39,17 @@ def generate_leaderboard(team=None):
     
     formatted_users = [f"<@{user.item.upper()}> ({user.total_points})" for user in top_ten]
     numbered_users = generate_numbered_list(formatted_users)
+    if asker_num == -1:
+        numbered_users += '\n\nYou currently have 0 coins.'
+    else:
+        numbered_users += f'\n\nYou are currently #{asker_num}.'
 
     formatted_all_time_users = [f"<@{user.item.upper()}> ({pts})" for pts, user in top_all_time]
     numbered_all_time_users = generate_numbered_list(formatted_all_time_users)
+    if asker_num_all_time == -1:
+        numbered_all_time_users += '\n\nYou currently have 0 coins.'
+    else:
+        numbered_all_time_users += f'\n\nYou are currently #{asker_num_all_time}.'
 
     header = f"Here's the current leaderboard.\nTotal coins in circulation: {total_coins}.\nTotal number of students with points: {all_users.count()-1}"
     leaderboard_header = {"type": "section",
