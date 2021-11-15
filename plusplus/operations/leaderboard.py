@@ -12,7 +12,7 @@ def generate_leaderboard(asker, team=None):
     for i, user in enumerate(all_users):
         total_coins += user.total_points
         if user is not None and user.id == asker.id:
-            asker_num = i
+            asker_num = i+1
     
     top_ten = all_users.limit(10)
     
@@ -29,7 +29,7 @@ def generate_leaderboard(asker, team=None):
     asker_num_all_time = -1
     for i, (user_pts, user) in enumerate(all_time_pts):
         if user is not None and user.id == asker.id:
-            asker_num_all_time = i
+            asker_num_all_time = i # hack: remove me (not i+1)
     
     top_all_time = all_time_pts[1:11] # hack: remove me
     total_coins -= all_time_pts[0][0] # ^
