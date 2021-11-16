@@ -243,7 +243,10 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         test_cats = {}
 
         failed_test = None
-        for test in submission.tests:
+        
+        student_tests = submission.tests[:]
+        student_tests.sort(key=lambda test: test.testCase)
+        for test in student_tests:
             if test.testCase not in test_cases:
                 test_cases[test.testCase] = codepost.test_case.retrieve(id=test.testCase)
                 test_cat = test_cases[test.testCase].testCategory
