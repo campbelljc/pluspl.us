@@ -275,6 +275,9 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         
         message = f"The first failing private test for your Assignment 3 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\nNote: Please do not discuss this private test with other students nor post on the discussion board about it."        
         return True, message
+    else:
+        message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
+        return False, message
     
     '''   
     elif str(option_num) == "3":
@@ -291,6 +294,4 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         #message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
         #return True, message
     '''
-    else:
-        message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
-        return False, message
+    
