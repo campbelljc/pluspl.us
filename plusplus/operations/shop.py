@@ -2,9 +2,9 @@ from .. import config
 
 shop_options = [
     # opt. number, num. coins, description
-    (1,    100, 'number of passing vs. failing private tests on your submission for Assignment 2'),
-    (2,   1000, 'information (test title, potential error message) on first failing private test on your submission for Assignment 2'),
-    (3,   1000, 'contribute to midterm hint pool')
+    (1,    100, 'number of passing vs. failing private tests on your submission for Assignment 3'),
+    (2,   1000, 'information (test title, potential error message) on first failing private test on your submission for Assignment 3'),
+    #(3,   1000, 'contribute to midterm hint pool')
     #(3, 100000, 'sticker (see discussion board for types) (first come first serve)')
 ]
 
@@ -31,7 +31,7 @@ def shop_text(team, coins):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "No options are currently available." # "\n".join(option_texts)
+                "text": "\n".join(option_texts)
             }
         },
         {

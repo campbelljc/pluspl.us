@@ -186,9 +186,9 @@ def get_assignment_submission(team, user):
         raise Exception("Couldn't find course with name %s and period %s" % (config.COURSE_CODE, config.COURSE_TERM))
     this_course = course_list[0]
 
-    this_assignment = this_course.assignments.by_name(name="Assignment 2")
+    this_assignment = this_course.assignments.by_name(name="Assignment 3")
     if this_assignment is None:
-        raise Exception("ERROR: couldn't find assignment with name %s in specified course" % ("Assignment 2"))
+        raise Exception("ERROR: couldn't find assignment with name %s in specified course" % ("Assignment 3"))
 
     # retrieve list of assignment's submissions
     submissions = this_assignment.list_submissions(student=email)
@@ -196,14 +196,14 @@ def get_assignment_submission(team, user):
 
 def process_redeem(user, team, channel, thread_ts, option_num):
     #if str(option_num) == "1" or str(option_num) == "2":
-    #    return False, "It is not yet possible to redeem coins for Assignment 2. Please watch the discussion board as we will post there when the option will be available."
+    #    return False, "It is not yet possible to redeem coins for Assignment 3. Please watch the discussion board as we will post there when the option will be available."
     
-    return False, "This option is not available at this time."
+    #return False, "This option is not available at this time."
     
-    if str(option_num) == "1": # number of passing vs. failing private tests on your submission for Assignment 2
+    if str(option_num) == "1": # number of passing vs. failing private tests on your submission for Assignment 3
         submissions = get_assignment_submission(team, user)
         if len(submissions) == 0:
-            message = f"Could not find a submission for Assignment 2 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
+            message = f"Could not find a submission for Assignment 3 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
             return False, message
     
         submission = submissions[0]
@@ -228,14 +228,14 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             if test.passed:
                 passed_tests += 1
         
-        message = f"The results of the private tests on your latest Assignment 2 submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.\n\nFurther, certain public tests (e.g., invalid function test, amongst others) also have point values, so make sure to check those as well as they are not included here."
+        message = f"The results of the private tests on your latest Assignment 3 submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.\n\nFurther, certain public tests (e.g., invalid function test, amongst others) also have point values, so make sure to check those as well as they are not included here."
         
         return True, message
         
     elif str(option_num) == "2":
         submissions = get_assignment_submission(team, user)
         if len(submissions) == 0:
-            message = f"Error: Could not find a submission for Assignment 2 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
+            message = f"Error: Could not find a submission for Assignment 3 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
             return False, message
         submission = submissions[0]
         
@@ -261,18 +261,22 @@ def process_redeem(user, team, channel, thread_ts, option_num):
                 break
 
         if failed_test is None:
-            message = f"Error: Your submission for Assignment 2 is not failing any tests at the moment."
+            message = f"Error: Your submission for Assignment 3 is not failing any tests at the moment."
             return False, message
         
         test_logs = failed_test.logs + "\n" + test_case.explanation
         test_desc = test_case.description
         test_cat_id = test_case.testCategory
+        test_expl = test_case.explanation
+        if len(test_expl) > 0:
+            test_expl = f"({text_expl})"
         test_cat = codepost.test_category.retrieve(id=test_cat_id)
         test_cat_name = test_cat.name
         
-        message = f"The first failing private test for your Assignment 2 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc}\nLogs: {test_logs}\n\nNote: Please do not discuss this private test with other students nor post on the discussion board about it."        
+        message = f"The first failing private test for your Assignment 3 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\nNote: Please do not discuss this private test with other students nor post on the discussion board about it."        
         return True, message
-        
+    
+    '''   
     elif str(option_num) == "3":
         team.add_to_midterm_pool(1000)
         message = f"You have added 1000 points to the midterm hint pool. The pool is now at {team.midterm_pool_points}."
@@ -286,7 +290,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         return True, message
         #message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
         #return True, message
-    
+    '''
     else:
         message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
         return False, message
