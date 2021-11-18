@@ -17,12 +17,22 @@ def generate_leaderboard(asker, team=None):
     top_ten = all_users.limit(10)
     
     # get all time top 10
+    
+    mods = {
+        'U02FRLV0WHW': -2000,
+        'U02EMACUZ9D': -1000,
+        'U02FRMK58KA': -1000,
+        'U02EZ1W07L5': -1000
+    }
+    
     all_time_pts = []
     for user in all_users:
         user_pts = 0
         for point in user.points:
             if point.value > 0:
                 user_pts += point.value
+        if user.id.upper() in mods:
+            user_pts += mods[user.id.upper()]
         all_time_pts.append((user_pts, user))
     all_time_pts.sort(reverse=True, key=lambda tup: tup[0])
     

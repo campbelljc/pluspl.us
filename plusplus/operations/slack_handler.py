@@ -208,6 +208,8 @@ def process_redeem(user, team, channel, thread_ts, option_num):
     
         submission = submissions[0]
         
+        timeout = False
+        
         test_cases = {}
         test_cats = {}
         num_tests, passed_tests = 0, 0
@@ -227,8 +229,14 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             num_tests += 1
             if test.passed:
                 passed_tests += 1
+            
+            if 'Operation Timed Out' in test.logs:
+                timeout = True
         
         message = f"The results of the private tests on your latest Assignment 3 submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.\n\nFurther, certain public tests (e.g., invalid function test, amongst others) also have point values, so make sure to check those as well as they are not included here."
+        
+        if timeout:
+            message += "\n\n*Note: A timeout error was detected in your submission. When a test times out, all subsequent tests also time out, which can cause a large number of tests to appear as failed when they would pass if the bug affecting the timed out test was fixed.*"
         
         return True, message
         
