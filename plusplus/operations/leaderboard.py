@@ -31,8 +31,8 @@ def generate_leaderboard(asker, team=None):
         for point in user.points:
             if point.value > 0:
                 user_pts += point.value
-        if user.user.upper() in mods:
-            user_pts += mods[user.user.upper()]
+        if user.item.upper() in mods:
+            user_pts += mods[user.item.upper()]
         all_time_pts.append((user_pts, user))
     all_time_pts.sort(reverse=True, key=lambda tup: tup[0])
     
