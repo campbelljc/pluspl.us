@@ -20,12 +20,25 @@ def generate_leaderboard(asker, team=None):
     
     mods = {
         'U02FRLV0WHW': -3000,
-        'U02EMACUZ9D': -1000,
+        'U02EMACUZ9D': -2000,
         'U02FRMK58KA': -1000,
         'U02EZ1W07L5': -2000, 
         'U02EZ24ULAZ': -1000,
-        'U02EXDQSG4B': -1000,
-        'U02EARLDLBV': -1000
+        'U02EXDQSG4B': -3000,
+        'U02EARLDLBV': -2000,
+        'U02F22DL6EP': -1000,
+        'U02FRLV2F3J': -1000,
+        'U02DW4BG37Z': -1000,
+        'U02E43LC1N2': -2000,
+        'U02ERRSLWDU': -1000,
+        'U02EMACEPUP': -1000,
+        'U02EHSK177Z': -1000,
+        'U02EZ24T8VB': -2000,
+        'U02EV9WP9AA': -1000,
+        'U02EHSK4U8P': -1000,
+        'U02F05SFFJ4': -1000,
+        'U02EMABTSVD': -1000,
+        'U02E3Q1P5ML': -1000
     }
     
     all_time_pts = []
