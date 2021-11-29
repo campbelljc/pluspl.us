@@ -2,8 +2,8 @@ from .. import config
 
 shop_options = [
     # opt. number, num. coins, description
-    (1,    100, 'number of passing vs. failing private tests on your submission for Assignment 3'),
-    (2,   1000, 'information (test title, potential error message) on first failing private test on your submission for Assignment 3'),
+    (1,    100, 'number of passing vs. failing private tests on your submission for the team project'),
+    (2,    500, 'information on private tests for team project'),
     #(3,   1000, 'contribute to midterm hint pool')
     #(3, 100000, 'sticker (see discussion board for types) (first come first serve)')
 ]

@@ -186,9 +186,9 @@ def get_assignment_submission(team, user):
         raise Exception("Couldn't find course with name %s and period %s" % (config.COURSE_CODE, config.COURSE_TERM))
     this_course = course_list[0]
 
-    this_assignment = this_course.assignments.by_name(name="Assignment 3")
+    this_assignment = this_course.assignments.by_name(name="Group Project")
     if this_assignment is None:
-        raise Exception("ERROR: couldn't find assignment with name %s in specified course" % ("Assignment 3"))
+        raise Exception("ERROR: couldn't find assignment with name %s in specified course" % ("Group Project"))
 
     # retrieve list of assignment's submissions
     submissions = this_assignment.list_submissions(student=email)
@@ -200,10 +200,10 @@ def process_redeem(user, team, channel, thread_ts, option_num):
     
     #return False, "Redeeming coins has been disabled starting at 5:00 p.m. EST Saturday evening as we are making changes to certain tests."
     
-    if str(option_num) == "1": # number of passing vs. failing private tests on your submission for Assignment 3
+    if str(option_num) == "1": # number of passing vs. failing private tests
         submissions = get_assignment_submission(team, user)
         if len(submissions) == 0:
-            message = f"Could not find a submission for Assignment 3 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
+            message = f"Could not find a submission for Team Project with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
             return False, message
     
         submission = submissions[0]
@@ -233,7 +233,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             if 'Operation Timed Out' in test.logs:
                 timeout = True
         
-        message = f"The results of the private tests on your latest Assignment 3 submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.\n\nFurther, certain public tests (e.g., invalid function test, amongst others) also have point values, so make sure to check those as well as they are not included here."
+        message = f"The results of the private tests on your latest Team Project submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.\n\nFurther, certain public tests (e.g., invalid function test, amongst others) also have point values, so make sure to check those as well as they are not included here."
         
         if timeout:
             message += "\n\n*Note: A timeout error was detected in your submission. When a test times out, all subsequent tests also time out, which can cause a large number of tests to appear as failed when they would pass if the bug affecting the timed out test was fixed.*"
@@ -243,14 +243,14 @@ def process_redeem(user, team, channel, thread_ts, option_num):
     elif str(option_num) == "2":
         submissions = get_assignment_submission(team, user)
         if len(submissions) == 0:
-            message = f"Error: Could not find a submission for Assignment 3 with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
+            message = f"Error: Could not find a submission for Team Project with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
             return False, message
         submission = submissions[0]
         
         test_cases = {}
         test_cats = {}
 
-        failed_test = None
+        failed_tests = []
         
         student_tests = submission.tests[:]
         student_tests.sort(key=lambda test: test.testCase)
@@ -268,23 +268,23 @@ def process_redeem(user, team, channel, thread_ts, option_num):
                 continue
         
             if not test.passed:
-                failed_test = test
-                break
-
-        if failed_test is None:
-            message = f"Error: Your submission for Assignment 3 is not failing any tests at the moment."
+                failed_tests.append((test_case, test_cat, test))
+        
+        if len(failed_tests) == 0:
+            message = f"Error: Your submission for Team Project is not failing any tests at the moment."
             return False, message
         
-        test_logs = failed_test.logs + "\n" + test_case.explanation
-        test_desc = test_case.description
-        test_cat_id = test_case.testCategory
-        test_expl = test_case.explanation
-        if len(test_expl) > 0:
-            test_expl = f"({text_expl})"
-        test_cat = codepost.test_category.retrieve(id=test_cat_id)
-        test_cat_name = test_cat.name
-        
-        message = f"The first failing private test for your Assignment 3 submission is as follows:\nTest category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\nNote: Please do not discuss this private test with other students nor post on the discussion board about it."        
+        message = "Private test info is as follows:\n"
+        for test_case, test_cat, failed_test in failed_tests:
+            test_logs = failed_test.logs + "\n" + test_case.explanation
+            test_desc = test_case.description
+            test_cat_id = test_case.testCategory
+            test_expl = test_case.explanation
+            if len(test_expl) > 0:
+                test_expl = f"({text_expl})"
+            test_cat = codepost.test_category.retrieve(id=test_cat_id)
+            test_cat_name = test_cat.name
+            message += f"Test category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\n"        
         return True, message
     else:
         message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
