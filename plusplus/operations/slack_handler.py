@@ -120,9 +120,13 @@ def process_incoming_message(event_data):
             
             # check if user has enough points
             user = Thing.query.filter_by(item=user.lower(), team=team).first()
+            
             if not user:
                 post_message('Your user ID is not recognized (this can happen if you have no coins yet).', team, channel, thread_ts=thread_ts)
             else:
+                if 'hint pool' in desc:
+                    pts = user.total_points * 0.10
+                
                 if user.total_points < pts:
                     post_message(f'This option costs {pts} coins, but you have {user.total_points}.', team, channel, thread_ts=thread_ts)
                 else:
@@ -144,6 +148,9 @@ def process_incoming_message(event_data):
     elif "msg" in message and (team.bot_user_id.lower() in message or channel_type == "im") and user == config.SLACK_ADMIN_USER_ID:
         msg = orig_message.split("msg")[-1].strip().replace("*", "")
         post_message(msg, team, GENERAL_CHANNEL)
+    elif "clear_pool" in message and (team.bot_user_id.lower() in message or channel_type == "im") and user == config.SLACK_ADMIN_USER_ID:
+        team.midterm_pool_points = 0
+        db.session.commit()
 
     # handle user point operations
 
@@ -290,19 +297,21 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
         return False, message
     
-    '''   
+    #'''   
     elif str(option_num) == "3":
-        team.add_to_midterm_pool(1000)
-        message = f"You have added 1000 points to the midterm hint pool. The pool is now at {team.midterm_pool_points}."
-        if team.midterm_pool_points % 5000 == 0:
-            post_message(f"The midterm points pool is now at {team.midterm_pool_points}. Further message will be posted after an additional 5000 is contributed.", team, GENERAL_CHANNEL)
-        if team.midterm_pool_points % 30000 == 0:
-            post_message(f"A midterm hint has been unlocked! Please check the discussion board later in the day.", team, GENERAL_CHANNEL)
-            post_message(f"Let's flip a coin to see if one hint or two will be provided!", team, GENERAL_CHANNEL)
-            post_message(f">>> random.randint(1, 2)", team, GENERAL_CHANNEL)
-            post_message(f"{random.randint(1, 2)}", team, GENERAL_CHANNEL)
+        ten_pct = int(user.total_points * 0.10)
+        team.add_to_midterm_pool(ten_pct)
+        message = f"You have added {ten_pct} coins to the final hint pool. The pool is now at {team.midterm_pool_points}."
+        rounded_figure = round(team.midterm_pool_points, -3)
+        if rounded_figure % 5000 == 0:
+            post_message(f"The final hint coins pool is now at {team.midterm_pool_points}. Further message will be posted after an additional 5000 is contributed.", team, GENERAL_CHANNEL)
+        if rounded_figure % 100000 == 0:
+            post_message(f"A final exam hint has been unlocked! Please check the discussion board later in the day.", team, GENERAL_CHANNEL)
+            #post_message(f"Let's flip a coin to see if one hint or two will be provided!", team, GENERAL_CHANNEL)
+            #post_message(f">>> random.randint(1, 2)", team, GENERAL_CHANNEL)
+            #post_message(f"{random.randint(1, 2)}", team, GENERAL_CHANNEL)
         return True, message
         #message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
         #return True, message
-    '''
+    #'''
     
