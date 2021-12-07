@@ -295,13 +295,13 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         return True, message
     
     elif str(option_num) == "3":
-        ten_pct = int(user.total_points * 0.10)
+        ten_pct = round(int(user.total_points * 0.10), 2)
         team.add_to_midterm_pool(ten_pct)
         message = f"You have added {ten_pct} coins to the final hint pool. The pool is now at {team.midterm_pool_points}."
-        rounded_figure = round(team.midterm_pool_points, -3)
+        rounded_figure = round(team.midterm_pool_points, -2)
         if team.midterm_pool_points >= 5000 and rounded_figure % 5000 == 0:
             post_message(f"The final hint coins pool is now at {team.midterm_pool_points}. Further message will be posted after an additional 5000 is contributed.", team, GENERAL_CHANNEL)
-        if team.midterm_pool_points >= 5000 and rounded_figure % 100000 == 0:
+        if team.midterm_pool_points >= 100000 and rounded_figure % 100000 == 0:
             post_message(f"A final exam hint has been unlocked! Please check the discussion board later in the day.", team, GENERAL_CHANNEL)
             #post_message(f"Let's flip a coin to see if one hint or two will be provided!", team, GENERAL_CHANNEL)
             #post_message(f">>> random.randint(1, 2)", team, GENERAL_CHANNEL)
