@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import aggregated
-from slack import WebClient
+from slack_sdk import WebClient
 import datetime
 
 db = SQLAlchemy()

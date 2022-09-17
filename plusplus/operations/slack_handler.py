@@ -12,8 +12,7 @@ import codepost
 
 user_exp = re.compile(r"<@([A-Za-z0-9]+)> *(\+\+|\-\-|==|\+\=|\-\=) ([0-9]+)")
 thing_exp = re.compile(r"#([A-Za-z0-9\.\-_@$!\*\(\)\,\?\/%\\\^&\[\]\{\"':; ]+)(\+\+|\-\-|==)")              
-
-GENERAL_CHANNEL = 'C02DZ5ACZ1U'
+GENERAL_CHANNEL = 'C042WDGKRHA' # Groups_COMP202_Fall2022 #general channel
 
 def get_id_for_name(team, name):
     response = team.slack_client.users_list()
@@ -193,9 +192,9 @@ def get_assignment_submission(team, user):
         raise Exception("Couldn't find course with name %s and period %s" % (config.COURSE_CODE, config.COURSE_TERM))
     this_course = course_list[0]
 
-    this_assignment = this_course.assignments.by_name(name="Group Project")
+    this_assignment = this_course.assignments.by_name(name=config.ASSIGNMENT_NAME)
     if this_assignment is None:
-        raise Exception("ERROR: couldn't find assignment with name %s in specified course" % ("Group Project"))
+        raise Exception(f"ERROR: couldn't find assignment with name {config.ASSIGNMENT_NAME} in specified course")
 
     # retrieve list of assignment's submissions
     submissions = this_assignment.list_submissions(student=email)
@@ -210,7 +209,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
     if str(option_num) == "1": # number of passing vs. failing private tests
         submissions = get_assignment_submission(team, user)
         if len(submissions) == 0:
-            message = f"Could not find a submission for Team Project with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
+            message = f"Could not find a submission for {config.ASSIGNMENT_NAME} with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
             return False, message
     
         submission = submissions[0]
@@ -240,7 +239,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             if 'Operation Timed Out' in test.logs:
                 timeout = True
         
-        message = f"The results of the private tests on your latest Team Project submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first page of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.\n\nFurther, certain public tests (e.g., invalid function test, amongst others) also have point values, so make sure to check those as well as they are not included here."
+        message = f"The results of the private tests on your latest {config.ASSIGNMENT_NAME} submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first pages of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.\n\nFurther, certain public tests (e.g., invalid function test, amongst others) also have point values, so make sure to check those as well as they are not included here."
         
         if timeout:
             message += "\n\n*Note: A timeout error was detected in your submission. When a test times out, all subsequent tests also time out, which can cause a large number of tests to appear as failed when they would pass if the bug affecting the timed out test was fixed.*"
@@ -250,7 +249,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
     elif str(option_num) == "2":
         submissions = get_assignment_submission(team, user)
         if len(submissions) == 0:
-            message = f"Error: Could not find a submission for Team Project with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
+            message = f"Error: Could not find a submission for {config.ASSIGNMENT_NAME} with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical and let your TA know if not."
             return False, message
         submission = submissions[0]
         
@@ -278,7 +277,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
                 failed_tests.append((test_case, test_cat, test))
         
         if len(failed_tests) == 0:
-            message = f"Error: Your submission for Team Project is not failing any tests at the moment."
+            message = f"Error: Your submission for {config.ASSIGNMENT_NAME} is not failing any tests at the moment."
             return False, message
         
         message = "Private test info is as follows:\n"
@@ -294,6 +293,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             message += f"Test category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\n"        
         return True, message
     
+    '''
     elif str(option_num) == "3":
         ten_pct = round(int(user.total_points * 0.10), 2)
         team.add_to_midterm_pool(ten_pct)
@@ -309,7 +309,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         return True, message
         #message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
         #return True, message
-
+    '''
     else:
         message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
         return False, message
