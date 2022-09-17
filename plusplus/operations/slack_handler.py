@@ -136,7 +136,7 @@ def process_incoming_message(event_data):
                         message += '\nCould not redeem (coins balance unchanged).'
                         post_message(message, team, channel, thread_ts=thread_ts)
                     else:
-                        update_points(user, '-=', pts, reason=f'Redeemed {pts} coins for {desc}') # discard generated msgs
+                        update_points(user, '-=', pts, reason=f'for {desc}') # discard generated msgs
                         message += f'\n\nYour point balance is now {user.total_points}.'
                         post_message(message, team, channel, thread_ts=thread_ts)
                         #post_message(f'Student <@{user.item.upper()}> spent {pts} coins to redeem "{desc}".', team, user.ta_id.upper())
