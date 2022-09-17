@@ -5,6 +5,7 @@ def help_text(team):
     commands = ["• *{ping} leaderboard*: show the current high scores",
                 "• *{ping} shop*: show the list of things available to redeem for coins",
                 "• *{ping} help*: show this list of commands",
+                "• *{ping} log*: show a list of your coin deposits and withdrawals",
                 "• *{ping} redeem [x]*: redeem your coins for option [x] from the shop listing"]
     formatted_commands = list()
     for command in commands:

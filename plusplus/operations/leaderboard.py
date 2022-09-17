@@ -96,7 +96,7 @@ def generate_leaderboard(asker, team=None):
             adj = [f"<@{x}> ({y})" for x, y in current_and_adjacent_all_time.items()]
             current_user_all_time_info = generate_numbered_list(adj, start_number_all_time)
     
-    header = f"Here's the current leaderboard.\nTotal coins in circulation: {total_coins}.\nTotal number of students with points: {all_users.count()-1}"
+    header = f"Here's the current leaderboard.\nTotal coins in circulation: {total_coins}.\nTotal number of students with coins: {all_users.count()-1}"
     leaderboard_header = {"type": "section",
                           "text":
                               {

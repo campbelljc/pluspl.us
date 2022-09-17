@@ -1,5 +1,5 @@
 from plusplus.operations.points import update_points
-from plusplus.operations.leaderboard import generate_leaderboard
+from plusplus.operations.leaderboard import generate_leaderboard, generate_numbered_list
 from plusplus.operations.help import help_text
 from plusplus.operations.shop import *
 from plusplus.operations.reset import generate_reset_block
@@ -103,7 +103,7 @@ def process_incoming_message(event_data):
     elif "redeem" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
         option = message.split("redeem")[-1].strip().replace("*", "")
         if channel.lower() == GENERAL_CHANNEL.lower():
-            post_message(f'To redeem something, please open a DM with CoinsBot and enter your commands there. Thanks!', team, channel, thread_ts=thread_ts)
+            post_message(f'To use this command, please open a DM with CoinsBot and enter your commands there. Thanks!', team, channel, thread_ts=thread_ts)
             return "OK", 200
         print("redeem", message, user, channel)
         unrecognized = ''
@@ -133,17 +133,30 @@ def process_incoming_message(event_data):
                     assert user.ta_id is not None
                     status, message = process_redeem(user, team, channel, thread_ts, option_num)
                     if not status:
-                        message += '\nCould not redeem (points balance unchanged).'
+                        message += '\nCould not redeem (coins balance unchanged).'
                         post_message(message, team, channel, thread_ts=thread_ts)
                     else:
-                        update_points(user, '-=', pts, reason=f'Redeemed {pts} points for {desc}') # discard generated msgs
+                        update_points(user, '-=', pts, reason=f'Redeemed {pts} coins for {desc}') # discard generated msgs
                         message += f'\n\nYour point balance is now {user.total_points}.'
                         post_message(message, team, channel, thread_ts=thread_ts)
-                        #post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem "{desc}".', team, user.ta_id.upper())
-                        post_message(f'Student <@{user.item.upper()}> spent {pts} points to redeem "{desc}". They received the following message:\n{message}', team, config.SLACK_ADMIN_USER_ID.upper())
+                        #post_message(f'Student <@{user.item.upper()}> spent {pts} coins to redeem "{desc}".', team, user.ta_id.upper())
+                        post_message(f'Student <@{user.item.upper()}> spent {pts} coins to redeem "{desc}". They received the following message:\n{message}', team, config.SLACK_ADMIN_USER_ID.upper())
         
         print("Processed redeem for team " + team.id)
         return "OK", 200
+    elif "log" in message and (team.bot_user_id.lower() in message or channel_type == "im"):
+        if channel.lower() == GENERAL_CHANNEL.lower():
+            post_message(f'To use this command, please open a DM with CoinsBot and enter your commands there. Thanks!', team, channel, thread_ts=thread_ts)
+            return "OK", 200
+        
+        user = Thing.query.filter_by(item=user.lower(), team=team).first()
+        if not user:
+            post_message('Your user ID is not recognized (this can happen if you have no coins yet).', team, channel, thread_ts=thread_ts)
+            return "OK", 200
+        
+        message = get_txn_log(user, team, channel, thread_ts, option_num)
+        post_message(message, team, channel, thread_ts=thread_ts)
+        
     elif "msg" in message and (team.bot_user_id.lower() in message or channel_type == "im") and user == config.SLACK_ADMIN_USER_ID:
         msg = orig_message.split("msg")[-1].strip().replace("*", "")
         post_message(msg, team, GENERAL_CHANNEL)
@@ -293,6 +306,12 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             message += f"Test category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\n"        
         return True, message
     
+    else:
+        message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
+        return False, message
+        
+
+    
     '''
     elif str(option_num) == "3":
         ten_pct = round(int(user.total_points * 0.10), 2)
@@ -310,7 +329,16 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         #message = f"Please allow 1-3 days response time. Your TA will be in contact with you regarding sticker choice. Sticker choice is first come first serve, based on date of redemption."
         #return True, message
     '''
-    else:
-        message = "Sorry, that is not a valid option number to redeem. You can only choose an option from 1 to 3."
-        return False, message
+
+def get_txn_log(user, team, channel, thread_ts, option_num):
+    message = "Here is a list of all updates to your coin balance:\n\n"
     
+    txns = []
+    for point in user.points:
+        time = point.time_added.strftime("%m/%d/%Y, %H:%M:%S")
+        txns.append(f"{time}: {point.value} for {point.reason}")
+    
+    formatted_txns = generate_numbered_list(txns, start=1)
+    
+    message += formatted_txns
+    return message
