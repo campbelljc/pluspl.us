@@ -25,13 +25,6 @@ def help_text(team):
                 "type": "mrkdwn",
                 "text": "\n".join(formatted_commands)
             }
-        },
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": f"Still need help? Please get in touch with your TA!"
-            }
         }
     ]
     return help_block
