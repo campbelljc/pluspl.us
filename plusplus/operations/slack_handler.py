@@ -154,7 +154,7 @@ def process_incoming_message(event_data):
             post_message('Your user ID is not recognized (this can happen if you have no coins yet).', team, channel, thread_ts=thread_ts)
             return "OK", 200
         
-        message = get_txn_log(user, team, channel, thread_ts, option_num)
+        message = get_txn_log(user, team, channel, thread_ts)
         post_message(message, team, channel, thread_ts=thread_ts)
         
     elif "msg" in message and (team.bot_user_id.lower() in message or channel_type == "im") and user == config.SLACK_ADMIN_USER_ID:
@@ -330,7 +330,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         #return True, message
     '''
 
-def get_txn_log(user, team, channel, thread_ts, option_num):
+def get_txn_log(user, team, channel, thread_ts):
     message = "Here is a list of all updates to your coin balance:\n\n"
     
     txns = []
