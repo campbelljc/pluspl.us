@@ -167,7 +167,7 @@ def process_incoming_message(event_data):
     # handle user point operations
 
     user_match = user_exp.match(message)
-    if not user_match or user != config.SLACK_ADMIN_USER_ID:
+    if not user_match or user.lower() != config.SLACK_ADMIN_USER_ID.lower():
         return "OK", 200
 
     if ';ta_id=' in message:
