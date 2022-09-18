@@ -105,6 +105,10 @@ def process_incoming_message(event_data):
         if channel.lower() == GENERAL_CHANNEL.lower():
             post_message(f'To use this command, please open a DM with CoinsBot and enter your commands there. Thanks!', team, channel, thread_ts=thread_ts)
             return "OK", 200
+
+        post_message(f'No redemption options are currently available.', team, channel, thread_ts=thread_ts)
+        return "OK", 200
+
         print("redeem", message, user, channel)
         unrecognized = ''
         for c in option:
