@@ -2,8 +2,10 @@ from .. import config
 
 shop_options = [
     # opt. number, num. coins, description
-    (1,    100, 'number of passing vs. failing private tests on your Assignment 1 submission'),
-    (2,   1000, 'information on the first failing private test for your Assignment 1 submission'),
+    
+    #(1,    100, 'number of passing vs. failing private tests on your Assignment 1 submission'),
+    #(2,   1000, 'information on the first failing private test for your Assignment 1 submission'),
+    
     #(3,   '10% of your coin balance', 'contribute to final hint pool')
     #(3, 100000, 'sticker (see discussion board for types) (first come first serve)')
 ]
@@ -17,7 +19,7 @@ def shop_text(team, coins):
     for option in shop_options:
         option_texts.append(f'*[{option[0]}]* (*{option[1]} coins*) {option[2]}')
     
-    option_texts += ['\nOther options will be available as the term continues.', f'You currently have {coins} coins.']
+    option_texts += ['No options are currently available.\nOther options will be available as the term continues.', f'You currently have {coins} coins.']
     
     shop_block = [
         {

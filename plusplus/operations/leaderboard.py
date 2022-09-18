@@ -1,4 +1,5 @@
 from ..models import Thing, db
+from ..config import SLACK_ADMIN_USER_ID
 import json
 
 
@@ -11,6 +12,9 @@ def generate_leaderboard(asker, team=None):
     start_number = -1
     current_and_adjacent = {}
     for i, user in enumerate(all_users):
+        if user.id.lower() == SLACK_ADMIN_USER_ID.lower():
+            continue
+        
         total_coins += user.total_points
         if i > 10 and user is not None and user.id == asker.id:
             start_number = i-1
@@ -18,7 +22,7 @@ def generate_leaderboard(asker, team=None):
                 all_users[k].item.upper(): all_users[k].total_points for k in range(i-1, i+2)
             }
     
-    top_ten = all_users.limit(10)
+    top_ten = all_users.limit(11)
     
     # get all time top 10
     
@@ -26,6 +30,9 @@ def generate_leaderboard(asker, team=None):
     
     all_time_pts = []
     for user in all_users:
+        if user.id.lower() == SLACK_ADMIN_USER_ID.lower():
+            continue
+        
         user_pts = 0
         for point in user.points:
             if point.value > 0:
@@ -44,20 +51,15 @@ def generate_leaderboard(asker, team=None):
                 user.item.upper(): user_pts for k in range(i-1, i+2)
             }
     
-    top_all_time = all_time_pts[1:11] # hack: remove me
-    if len(all_time_pts) > 0:
-        total_coins -= all_time_pts[0][0] # ^
-    
-    #ordering_all_time = Thing.total_all_time_points.desc()
-    #all_time_top_ten = Thing.query.filter_by(**user_args).order_by(ordering_all_time)
-    
+    top_all_time = all_time_pts[:10]
+        
     # ***
     # make list of current top ten point holders
     # ***
     
     asker_in_top_ten = False
     formatted_users = []
-    for i, user in enumerate(top_ten):
+    for i, user in enumerate(top_ten[1:]):
         formatted_users.append(f"<@{user.item.upper()}> ({user.total_points})")
         if user.id == asker.id:
             asker_in_top_ten = True
