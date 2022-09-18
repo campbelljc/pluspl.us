@@ -12,7 +12,7 @@ def generate_leaderboard(asker, team=None):
     start_number = -1
     current_and_adjacent = {}
     for i, user in enumerate(all_users):
-        if user.id.lower() == SLACK_ADMIN_USER_ID.lower():
+        if user.item.lower() == SLACK_ADMIN_USER_ID.lower():
             continue
         
         total_coins += user.total_points
@@ -30,7 +30,7 @@ def generate_leaderboard(asker, team=None):
     
     all_time_pts = []
     for user in all_users:
-        if user.id.lower() == SLACK_ADMIN_USER_ID.lower():
+        if user.item.lower() == SLACK_ADMIN_USER_ID.lower():
             continue
         
         user_pts = 0
