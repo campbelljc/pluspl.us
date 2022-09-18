@@ -45,7 +45,8 @@ def generate_leaderboard(asker, team=None):
             }
     
     top_all_time = all_time_pts[1:11] # hack: remove me
-    total_coins -= all_time_pts[0][0] # ^
+    if len(all_time_pts) > 0:
+        total_coins -= all_time_pts[0][0] # ^
     
     #ordering_all_time = Thing.total_all_time_points.desc()
     #all_time_top_ten = Thing.query.filter_by(**user_args).order_by(ordering_all_time)
