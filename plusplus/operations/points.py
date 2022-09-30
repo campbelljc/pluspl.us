@@ -32,7 +32,7 @@ def generate_string(thing, operation, num_pts, reason):
     msg_to_admin = ''
 
     points = thing.total_points
-    points_word = "points" if points > 1 else "point"
+    points_word = "coins" if points > 1 else "coin"
     points_string = f"{points} {points_word}"
     with open("plusplus/strings.json", "r") as strings:
         parsed = json.load(strings)
