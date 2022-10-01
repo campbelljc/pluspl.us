@@ -106,8 +106,8 @@ def process_incoming_message(event_data):
             post_message(f'To use this command, please open a DM with CoinsBot and enter your commands there. Thanks!', team, channel, thread_ts=thread_ts)
             return "OK", 200
 
-        post_message(f'No redemption options are currently available.', team, channel, thread_ts=thread_ts)
-        return "OK", 200
+        #post_message(f'No redemption options are currently available.', team, channel, thread_ts=thread_ts)
+        #return "OK", 200
 
         print("redeem", message, user, channel)
         unrecognized = ''
@@ -259,7 +259,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
         message = f"The results of the private tests on your latest {config.ASSIGNMENT_NAME} submission to codePost are as follows:\nPassed: {passed_tests}\nFailed: {num_tests-passed_tests}\nTotal tests: {num_tests}\n\nNote that the grade for an assignment is not fully decided by the private tests. Our TAs will also check that your submission complies with the assignment's instructions regarding style and other issues as listed on the first pages of the PDF.\n\nAlso, note that the number of private tests are subject to change, so these totals may not entirely reflect the final grade on the assignment.\n\nFurther, certain public tests (e.g., invalid function test, amongst others) also have point values, so make sure to check those as well as they are not included here."
         
         if timeout:
-            message += "\n\n*Note: A timeout error was detected in your submission. When a test times out, all subsequent tests also time out, which can cause a large number of tests to appear as failed when they would pass if the bug affecting the timed out test was fixed.*"
+            message += "\n\n*Note: A timeout error was detected in your submission. When a test times out, all subsequent tests also time out and thus automatically fail. (So a timeout may cause a large number of failed tests.)*"
         
         return True, message
         
