@@ -106,8 +106,8 @@ def process_incoming_message(event_data):
             post_message(f'To use this command, please open a DM with CoinsBot and enter your commands there. Thanks!', team, channel, thread_ts=thread_ts)
             return "OK", 200
 
-        post_message(f'No redemption options are currently available.', team, channel, thread_ts=thread_ts)
-        return "OK", 200
+        #post_message(f'No redemption options are currently available.', team, channel, thread_ts=thread_ts)
+        #return "OK", 200
 
         print("redeem", message, user, channel)
         unrecognized = ''
@@ -307,7 +307,8 @@ def process_redeem(user, team, channel, thread_ts, option_num):
                 test_expl = f"({text_expl})"
             test_cat = codepost.test_category.retrieve(id=test_cat_id)
             test_cat_name = test_cat.name
-            message += f"Test category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\n"        
+            message += f"Test category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\n"
+            break
         return True, message
     
     else:
