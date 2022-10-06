@@ -221,7 +221,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
     #if str(option_num) == "1" or str(option_num) == "2":
     #    return False, "It is not yet possible to redeem coins for Assignment 3. Please watch the discussion board as we will post there when the option will be available."
     
-    #return False, "Redeeming coins has been disabled starting at 5:00 p.m. EST Saturday evening as we are making changes to certain tests."
+    return False, "coinsbot is currently under maintenance. Please try again in a few minutes."
     
     if str(option_num) == "1": # number of passing vs. failing private tests
         submissions = get_assignment_submission(team, user)
