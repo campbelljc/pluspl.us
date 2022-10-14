@@ -226,7 +226,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
     if str(option_num) == "1": # number of passing vs. failing private tests
         submissions = get_assignment_submission(team, user)
         if len(submissions) == 0:
-            message = f"Could not find a submission for {config.ASSIGNMENT_NAME} with email {email}. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical. If they are not, please make a private post on the course discussion board."
+            message = f"Could not find a submission for {config.ASSIGNMENT_NAME} with your email. Are you sure you have made a submission? If so, please check that your Slack and codePost emails are identical. If they are not, please make a private post on the course discussion board."
             return False, message
     
         submission = submissions[0]
