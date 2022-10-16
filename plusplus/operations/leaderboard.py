@@ -28,7 +28,8 @@ def generate_leaderboard(asker, team=None):
     
     mods = {
         'U043XA6BVLN': -1250,
-        'U042RBZ6C6A': -1500
+        'U042RBZ6C6A': -1500,
+        'U042PCQJ4CW': -250
     }
     
     all_time_pts = []

@@ -304,7 +304,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             test_cat_id = test_case.testCategory
             test_expl = test_case.explanation
             if len(test_expl) > 0:
-                test_expl = f"({text_expl})"
+                test_expl = f"({test_expl})"
             test_cat = codepost.test_category.retrieve(id=test_cat_id)
             test_cat_name = test_cat.name
             message += f"Test category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\n"
