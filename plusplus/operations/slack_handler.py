@@ -308,6 +308,7 @@ def process_redeem(user, team, channel, thread_ts, option_num):
             test_cat = codepost.test_category.retrieve(id=test_cat_id)
             test_cat_name = test_cat.name
             message += f"Test category: {test_cat_name}\nTest name: {test_desc} {test_expl}\nLogs: {test_logs}\n\n"
+            message = message.replace("\n", "\n ")
             break
         return True, message
     
