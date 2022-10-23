@@ -50,6 +50,9 @@ def generate_string(thing, operation, num_pts, reason):
         elif operation == "equals":
             msg_to_admin = random.choice(parsed[operation]).format(thing=formatted_thing, points_string=points_string)
     
-    msg_to_user = f'Congrats! You have been awarded {num_pts} coins for{reason}. You now have a total of {thing.total_points} {points_word}.'
+    if operation == "plus":
+        msg_to_user = f'Congrats! You have been awarded {num_pts} coins for{reason}. You now have a total of {thing.total_points} {points_word}.'
+    elif operation == "minus":
+        msg_to_user = f'Oh no! You have lost {num_pts} coins for{reason}. You now have a total of {thing.total_points} {points_word}.'
     
     return msg_to_admin, msg_to_user
