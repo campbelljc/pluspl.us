@@ -10,7 +10,7 @@ import re
 import random
 import codepost
 
-user_exp = re.compile(r"<@([A-Za-z0-9]+)> *(\+\+|\-\-|==|\+\=|\-\=) ([0-9]+)")
+user_exp = re.compile(r"<@([A-Za-z0-9]+)> *(\+\+|\-\-|==|\+\=|\-\=) ([-0-9]+)")
 thing_exp = re.compile(r"#([A-Za-z0-9\.\-_@$!\*\(\)\,\?\/%\\\^&\[\]\{\"':; ]+)(\+\+|\-\-|==)")              
 GENERAL_CHANNEL = 'C042WDGKRHA' # Groups_COMP202_Fall2022 #general channel
 
