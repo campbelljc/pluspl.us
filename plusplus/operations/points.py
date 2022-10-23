@@ -6,6 +6,10 @@ import random
 def update_points(thing, end, num_pts, reason, is_self=False):
     #if is_self and end != '==':  # don't allow someone to plus themself
     #    operation = "self"
+    if num_pts < 0:
+        num_pts = abs(num_pts)
+        end = '-='
+    
     if end in ['++', '+=']:
         operation = "plus"
         point = thing.increment(num_pts, reason)
