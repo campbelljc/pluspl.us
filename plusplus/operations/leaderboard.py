@@ -27,9 +27,16 @@ def generate_leaderboard(asker, team=None):
     # get all time top 10
     
     mods = {
-        'U043XA6BVLN': -1250,
+        'U043XA6BVLN': -2500,
         'U042RBZ6C6A': -1500,
-        'U042PCQJ4CW': -250
+        'U042PCQJ4CW': -250,
+        'U0448D6F61J': -1500,
+        'U043RCXKY7R': -1500,
+        'U0446C256MA': -1500,
+        'U042V135WKX': -1500,
+        'U043AKJCEKB': -250,
+        'U044TKPR72L': -1000,
+        'U042HDP422K': -1250,
     }
     
     all_time_pts = []

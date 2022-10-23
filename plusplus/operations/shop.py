@@ -19,7 +19,8 @@ def shop_text(team, coins):
     for option in shop_options:
         option_texts.append(f'*[{option[0]}]* (*{option[1]} coins*) {option[2]}')
     
-    option_texts += ['No options are currently available.\nOther options will be available as the term continues.', f'You currently have {coins} coins.']
+    #'No options are currently available.\nOther options will be available as the term continues.',
+    option_texts += [f'You currently have {coins} coins.']
     
     shop_block = [
         {
