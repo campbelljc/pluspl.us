@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 import markdown
 
-views = Blueprint('views', __name__, template_folder='/template')
+views = Blueprint('views', __name__, static_folder='/static', template_folder='/template')
 
 
 @views.route('/')
