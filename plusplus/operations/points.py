@@ -53,6 +53,6 @@ def generate_string(thing, operation, num_pts, reason):
     if operation == "plus":
         msg_to_user = f'Congrats! You have been awarded {num_pts} coins for{reason}. You now have a total of {thing.total_points} {points_word}.'
     elif operation == "minus":
-        msg_to_user = f'Oh no! You have lost {num_pts} coins for{reason}. You now have a total of {thing.total_points} {points_word}.'
+        msg_to_user = f'You have lost {num_pts} coins for{reason}. You now have a total of {thing.total_points} {points_word}.'
     
     return msg_to_admin, msg_to_user
