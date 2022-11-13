@@ -37,6 +37,33 @@ def generate_leaderboard(asker, team=None):
         'U043AKJCEKB': -250,
         'U044TKPR72L': -1000,
         'U042HDP422K': -1250,
+        'U042FEAL4PR': -1250,
+        
+        'U042DDB3J9M': -550,
+        'U042FEALL79': -500,
+        'U042HDNF17H': -500,
+        'U042HDZS2TH': -500,
+        'U042RBY46LE': -500,
+        'U042RBZ6C6A': -500,
+        'U042RC2LYMU': -500,
+        'U042RCDAVRC': -500,
+        'U042T2EJTPX': -500,
+        'U042T2FKE8M': -500,
+        'U042V1ER7B7': -500,
+        'U042V1T8F0V': -500,
+        'U042W1FG6MQ': -500,
+        'U0430DPHD5J': -500,
+        'U0430DUTGSY': -500,
+        'U0430E09468': -500,
+        'U0438KVQ19P': -500,
+        'U043AJK7UBB': -500,
+        'U043AJVF2G1': -500,
+        'U043AK2SR7B': -500,
+        'U043AK41SAV': -500,
+        'U043MMDGG8G': -500,
+        'U0443U6T7L2': -1000,
+        'U045XRFGMB8': -500,
+        'U046NTT2X5M': -1000
     }
     
     all_time_pts = []
