@@ -219,7 +219,7 @@ def get_assignment_submission(team, user):
 
 def process_redeem(user, team, channel, thread_ts, option_num):
     #if str(option_num) in ["1", "2"]:
-    #    return False, "It is not yet possible to redeem coins for Assignment 2. Please watch the discussion board as we will post there when the option will be available."
+    #    return False, "It is not yet possible to redeem coins for Assignment 3. Please watch the discussion board as we will post there when the option will be available."
     
     #return False, "coinsbot is currently under maintenance. Please try again in a few minutes."
     
